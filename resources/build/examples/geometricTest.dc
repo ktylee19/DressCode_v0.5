@@ -1,0 +1,14 @@
+centerx=WIDTH/2;
+centery=HEIGHT/2;
+
+
+e=rect(centerx,centery,400,80);
+rotate(e,60);
+f=rect(centerx,centery,400,80);
+rotate(f,-60);
+
+c=poly(centerx,centery,5,100);
+//product=c+e+f;
+
+
+

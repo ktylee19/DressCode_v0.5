@@ -1,0 +1,17 @@
+ 
+   //Parameters
+  ellipseWidth = 100;
+  ellipseHeight = 100;
+  degree = 360/8;
+  
+  //Sine Wave 
+  repeat i=1:8:
+    xpos = 100 + i*50;
+    ypos = HEIGHT/2 + 100*sin(degree*i);
+    
+    ellipse(xpos, ypos, ellipseWidth, ellipseHeight);
+  end
+  
+  
+  
+  

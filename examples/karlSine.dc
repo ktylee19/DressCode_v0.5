@@ -1,0 +1,106 @@
+// SINE WAVE KARL
+
+//Body
+   //Parameters
+  radii = [0,50,60,70,70,80,70,65,75];
+  degree = 360/6.6;
+
+  oldxpos=0;
+  oldypos=0;
+  
+  //Sine Wave 
+  repeat i=0:7:
+    //create new coordinates
+    xpos = 100 + i*50;
+    ypos = HEIGHT/2 + 20*sin(degree*(i+2))-200;
+    
+    //new ellipse
+    a=ellipse(xpos, ypos, radii[i+1], radii[i+1]);
+    //old ellipse
+    b=ellipse(oldxpos, oldypos, radii[i]+5, radii[i]+5);
+    a=a-b;
+    noStroke(a);
+    
+    if i%2==0:
+        fill(a,BLUE);
+    else:
+        fill(a,GREEN);
+    end
+    
+    oldxpos = xpos;
+    oldypos = ypos;
+    
+  end
+  
+//Eyes
+  //eye=ellipse(10,10,xpos+20,ypos-10);
+  //retina=ellipse(10,10,xpos,ypos-10);
+  
+  eye=ellipse(oldxpos+25,oldypos-9,15,15);
+  retina=ellipse(oldxpos+28, oldypos-8, 5,5);
+  fill(eye,WHITE);
+  fill(retina,BLUE);
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+// PIECES KARL
+
+//1
+a=ellipse(100,HEIGHT/2);
+//2
+a1=ellipse(100,HEIGHT/2 - 0, 55,55);
+b=ellipse(150,HEIGHT/2 - 0,60,60);
+b = b-a1;
+//3
+b1=ellipse(150,HEIGHT/2,65,65);
+c=ellipse(200,HEIGHT/2 - 25 ,70,70);
+c = c-b1;
+//4
+c1=ellipse(200,HEIGHT/2 - 25,75,75);
+d=ellipse(250,HEIGHT/2 - 50,70,70);
+d = d-c1;
+//5
+d1=ellipse(250,HEIGHT/2 - 50,75,75);
+e=ellipse(300,HEIGHT/2 - 50,80,80);
+e = e-d1;
+//6
+e1=ellipse(300,HEIGHT/2 - 50,85,85);
+f=ellipse(350,HEIGHT/2 - 25,70,70);
+f = f-e1;
+//7
+f1=ellipse(350,HEIGHT/2 - 25,75,75);
+g=ellipse(400,HEIGHT/2 - 0,65,65);
+g = g-f1;
+//8
+g1=ellipse(400,HEIGHT/2 - 0,70,70);
+h=ellipse(450,HEIGHT/2-25,75,75);
+h = h-g1;
+
+blueHalf=group(a,c,e,g); 
+greenHalf=group(b,d,f,h); 
+fill(blueHalf,BLUE);
+fill(greenHalf,GREEN);
+noStroke(blueHalf);
+noStroke(greenHalf);
+
+
+eye=ellipse(450+25,HEIGHT/2-32,15,15);
+retina=ellipse(450+28, HEIGHT/2-30, 7,7);
+fill(eye,WHITE);
+fill(retina,BLUE);
+noStroke(eye);
+noStroke(retina);  
+
+
+
+
+
+

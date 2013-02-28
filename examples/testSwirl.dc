@@ -1,0 +1,9 @@
+centerx=WIDTH/2;
+centery=HEIGHT/2;
+
+//poly(centerx,centery, 4,200);
+
+repeat i=1:30:
+    fill(rotate(poly(centerx,centery, 4,200*(7/8)^i),10*i),17*i%255, 49*i%255, 67*i%255);
+    
+end
