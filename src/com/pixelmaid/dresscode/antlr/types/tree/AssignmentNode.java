@@ -2,6 +2,9 @@ package com.pixelmaid.dresscode.antlr.types.tree;
 
 import com.pixelmaid.dresscode.antlr.types.Scope;
 import com.pixelmaid.dresscode.antlr.types.VarType;
+import com.pixelmaid.dresscode.app.Manager;
+import com.pixelmaid.dresscode.app.Window;
+import com.pixelmaid.dresscode.drawing.primitive2d.Drawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,11 @@ public class AssignmentNode implements DCNode {
 
     if (indexNodes.isEmpty()) { // a simple assignment
       scope.assign(identifier, value);
+      if(value.isDrawable()){
+    	  Drawable d = value.asDrawable();
+    	  d.removeFromCanvas();
+    	  Window.canvas.addDrawable("drawable",-1,d);
+      }
     }
     else { // a possible list-lookup and reassignment
 

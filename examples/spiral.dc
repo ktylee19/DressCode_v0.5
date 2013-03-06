@@ -1,39 +1,29 @@
- 
-   //Parameters
+//Parameters
   ellipseWidth = 40;
   ellipseHeight = 20;
   a = 10;
   degree = 360/8;
 
-
-  //Spiral
-  repeat i=1:20:
-    xpos = a * i * cos(i*degree) + WIDTH/2;
-    ypos = a * i * sin(i*degree) + HEIGHT/2;
-    
-    ellipse(xpos, ypos, ellipseWidth, ellipseHeight);
-  end
-  
-
-
-  //Lined Spiral
+/*
+//Lined Spiral
   
   x=WIDTH/2;
   y=HEIGHT/2;
   
   repeat i=1:20:
+    //create coordinates parametrically
     xpos = a * i * cos(i*degree) + WIDTH/2;
     ypos = a * i * sin(i*degree) + HEIGHT/2;
-    
     line(x, y, xpos, ypos);
     
+    //adjust endpoints for next step
     x = xpos;
     y=ypos;
     
   end
- 
+*/ 
 
-/*
+
 //Curved Spiral
   x=WIDTH/2;
   y=HEIGHT/2;
@@ -53,7 +43,6 @@
     x = xpos;
     y=ypos;
   end
-  */
   
   
   

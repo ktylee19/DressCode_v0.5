@@ -4,7 +4,9 @@ package com.pixelmaid.dresscode.antlr.types.tree.functions;
 import java.util.List;
 import com.pixelmaid.dresscode.antlr.types.VarType;
 import com.pixelmaid.dresscode.antlr.types.tree.DCNode;
-import com.pixelmaid.dresscode.app.Manager;
+import com.pixelmaid.dresscode.app.Window;
+import com.pixelmaid.dresscode.app.Window;
+import com.pixelmaid.dresscode.drawing.datatype.Point;
 import com.pixelmaid.dresscode.drawing.primitive2d.LShape;
 
 public class LShapeNode extends DrawableNode implements DCNode {
@@ -16,13 +18,22 @@ public class LShapeNode extends DrawableNode implements DCNode {
 
 	@Override
 	public VarType evaluate() {
-		LShape e = null;
+		LShape e = new LShape();
 
 		try{
-			/*if(params.size()==0){
-				e= new Polygon();
-			}
-			else if(params.get(0).evaluate().isPoint()){
+			if(params.get(0).evaluate().isString()){
+				String path = params.get(0).evaluate().asString();
+				e.setPath(path);
+				e.setCanvas(Window.canvas);
+				e.loadShape();
+				
+				if(params.size()>1){
+					if(params.size()==3 && params.get(1).evaluate().isNumber()&& params.get(2).evaluate().isNumber()){
+						
+						e.moveTo(params.get(1).evaluate().asDouble(),params.get(2).evaluate().asDouble());
+					}
+				}
+			/*else if(params.get(0).evaluate().isPoint()){
 				e= new Polygon(params.get(0).evaluate().asPoint());
 			}
 			else if(params.get(0).evaluate().isNumber()&&params.get(1).evaluate().isNumber()){
@@ -50,25 +61,25 @@ public class LShapeNode extends DrawableNode implements DCNode {
 
 				}
 				else{
-					Manager.output.setText("incorrect parameters for polygon call at line:"+line);
+					Window.output.setText("incorrect parameters for polygon call at line:"+line);
 
 					System.err.println("inccorect number of arguments for polygon at line:"+line);
 				}
+			}*/
 			}
 			else{
-				Manager.output.setText("incorrect parameters for polygon call at line:"+line);
+				Window.output.setText("incorrect parameters for LShape call at line:"+line);
 
-				System.err.println("inccorect arguments for polygon at line:"+line);
+				System.err.println("inccorect arguments for LShape at line:"+line);
 			}
 
 
-			Manager.canvas.addDrawable("polygon",line,e);*/
+			Window.canvas.addDrawable("lShape",line,e);
 		}
 		catch (ClassCastException err){
-			Manager.output.setText("incorrect parameters for polygon call at line:"+line);
+			Window.output.setText("incorrect parameters for LShape call at line:"+line);
 
-			System.err.println("incorrect parameters for polygon at line:"+line);
-
+			System.err.println("inccorect arguments for LShape at line:"+line);
 		}
 		return new VarType(e);	
 		//throw new RuntimeException("Illegal function call: " + this);

@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import com.pixelmaid.dresscode.app.Embedded;
 import com.pixelmaid.dresscode.app.Manager;
+import com.pixelmaid.dresscode.app.Window;
 import com.pixelmaid.dresscode.drawing.datatype.Point;
 import com.pixelmaid.dresscode.drawing.math.Geom;
 
@@ -39,12 +40,19 @@ public class Drawable {
 		children.add(d);
 		d.setParent(this);
 	}
+	
+	private void add(Drawable d, int index){
+		children.add(index, d);
+		d.setParent(this);
+	}
 
 	//removes a child from list of children and destroys reference to child's parent
 	private void remove(Drawable d){
 		children.remove(d);
 		d.setParent(null);
 	}
+	
+	
 	
 	//sets the parent of the drawable
 	protected void setParent(Drawable p){
@@ -278,7 +286,7 @@ public class Drawable {
 
 	//removes drawable from canvas
 	public void removeFromCanvas(){
-		Manager.canvas.removeDrawable(this);
+		Window.canvas.removeDrawable(this);
 	}
 
 	//resets origin to new point resulting in the moving of the object
@@ -431,10 +439,13 @@ public class Drawable {
 	}
 	
 	
-	//START DEBUGGING HERE!!!! DOES NOT WORK WHEN D ALREADY HAD CHILDREN
 	//adds new child and resets origin of drawable to accommodate child (must be overridden by subclasses)
 	public Drawable addToGroup(Drawable d) {
-		
+		return this.addToGroup(d,this.numChildren());
+	}
+	
+	public Drawable addToGroup(Drawable d,int index) {
+		d.removeFromCanvas();
 
 			for(int i=0;i<this.children.size();i++){
 				this.children.get(i).setAbsolute();
@@ -442,7 +453,7 @@ public class Drawable {
 		
 		
 		
-		this.add(d);
+		this.add(d,index);
 		
 		
 		ArrayList<Point> origins = new ArrayList<Point>();
@@ -500,10 +511,12 @@ public class Drawable {
 			this.moveOrigin(Geom.getAveragePoint(origins)); //set origin to average of group origins and re-orient group origins
 			//this.setOrigin(Geom.getAveragePoint(origins));
 		}
+		
 		else if(this.children.size()==1){ //if only one child, return the child and remove empty group from canvas
-			this.removeFromCanvas();
-			
-			return this.children.get(0);
+			//this.removeFromCanvas();
+			//System.out.println("no more children, removing from canvas");
+			this.moveOrigin(this.children.get(0).getOrigin());
+			//return this.children.get(0);
 		}
 		else if(this.children.size()==0){
 			this.removeFromCanvas(); // if no children, remove empty group
@@ -513,6 +526,11 @@ public class Drawable {
 
 		
 
+	}
+	
+	public Drawable removeFromGroup(int index){
+		Drawable d = this.childAt(index);
+		return this.removeFromGroup(d);
 	}
 		
 		//removes all children from a drawable and returns them as orphans (must be overridden by subclasses)

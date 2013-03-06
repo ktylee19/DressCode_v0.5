@@ -5,10 +5,13 @@ to update the canvas */
 
 import java.awt.Font;
 import java.awt.event.*;
+import java.io.File;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -37,10 +40,11 @@ public class CodeField extends JEditorPane implements DocumentListener, KeyListe
         this.addKeyListener(this);
    
         //set reference to main canvas and output console
-        canvas = Manager.canvas;
-        output = Manager.output;
+        canvas = Window.canvas;
+        output = Window.output;
       
     }
+ 
     
     public void updateCanvas(){
 
@@ -49,7 +53,7 @@ public class CodeField extends JEditorPane implements DocumentListener, KeyListe
     	output.setText(""); //clear the output console
 
     	userCode = 	this.getText()+"\n"; //set user code to text in codeField
-
+    	
     	CharStream charStream = new ANTLRStringStream(userCode);
 
     	// create an instance of the lexer
@@ -74,8 +78,8 @@ public class CodeField extends JEditorPane implements DocumentListener, KeyListe
     		BlockNode returned = walker.walk();
 
     		returned.evaluate();
-    		Manager.canvas.draw();
-    		Manager.canvas.init();
+    		Window.canvas.draw();
+    		Window.canvas.init();
     		//System.out.println("updated canvas");
 
     	} catch (Exception e) {
@@ -89,15 +93,29 @@ public class CodeField extends JEditorPane implements DocumentListener, KeyListe
 
     }
 
-    
+    //adds a line of code to import in a shape;
+    public void insertPath(File f) throws BadLocationException{
+    	 String fileString = "import(\""+f.getAbsolutePath()+"\");";
+    	 int caretPos = this.getCaretPosition();
+    	 this.getDocument().insertString(caretPos, fileString, null);
+    }
 
-	@Override
+	//clears out the code window and all stored variables
+    //TODO: code that clears out stored variables
+    public void clear(){
+    	this.setText("");
+    	userCode="";
+    }
+    
+    @Override
 	public void changedUpdate(DocumentEvent arg0) {
 		// TODO Auto-generated method stub
 		//System.out.println("changedUpdate");
 	
 		
 	}
+	
+	
 
 	@Override
 	public void insertUpdate(DocumentEvent arg0) {

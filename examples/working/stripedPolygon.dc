@@ -39,6 +39,6 @@ rotate(c,0)
 p=copy(c);
 
 p=c-e-f-g-h-i-j;
-p2=copy(product);
-//move(p2, centerx+100, centery+100);
+p2=copy(p);
+move(p2, centerx+100, centery+100);
 

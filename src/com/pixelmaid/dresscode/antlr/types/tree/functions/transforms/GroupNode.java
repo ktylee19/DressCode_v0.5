@@ -6,6 +6,7 @@ import java.util.List;
 import com.pixelmaid.dresscode.antlr.types.VarType;
 import com.pixelmaid.dresscode.antlr.types.tree.DCNode;
 import com.pixelmaid.dresscode.app.Manager;
+import com.pixelmaid.dresscode.app.Window;
 import com.pixelmaid.dresscode.drawing.datatype.Point;
 import com.pixelmaid.dresscode.drawing.math.Geom;
 import com.pixelmaid.dresscode.drawing.primitive2d.Color;
@@ -30,14 +31,11 @@ public class GroupNode implements DCNode {
     @Override
     public VarType evaluate() {
     	
-    	if(params.size()<1){
-    		
-    		throw new RuntimeException("Incorrect number of parameters for group at line " + line);
-    	}
+    	
     	
     	try{
     	Drawable master = new Drawable();	
-    	
+    	if (params!=null){
     	for(int i=0;i<params.size();i++){
     		Drawable d= (params.get(i).evaluate().asDrawable());
     		
@@ -46,9 +44,10 @@ public class GroupNode implements DCNode {
     		master.addToGroup(d);
     	
     	}
+    	}
     	
     	//System.out.println("group children are polygons" + master.childrenArePolygons());
-    	Manager.canvas.addDrawable("drawable",-1,master);
+    	Window.canvas.addDrawable("drawable",-1,master);
     	return new VarType(master);
     	}
     	catch (ClassCastException e){

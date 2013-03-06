@@ -14,7 +14,7 @@ options {
    import com.pixelmaid.dresscode.antlr.types.tree.functions.transforms.*; 
   import java.util.Map;
   import java.util.HashMap;
-  import com.pixelmaid.dresscode.app.Manager;
+  import com.pixelmaid.dresscode.app.Window;
 }
 
 @members {
@@ -79,6 +79,8 @@ functionCall returns [DCNode node]
   |  ^(FUNC_CALL Print expression)     {node = new PrintNode($expression.node);}
   |  ^(FUNC_CALL Assert expression)    {node = new AssertNode($expression.node);}
   |  ^(FUNC_CALL Size expression)      {node = new SizeNode($expression.node);}
+  |  ^(FUNC_CALL LAdd exprList?) 	{node = new LAddNode($exprList.e,$FUNC_CALL.getLine());}
+  |  ^(FUNC_CALL LRemove exprList?) {node = new LRemoveNode($exprList.e,$FUNC_CALL.getLine());}
   |	 primitiveCall {node = $primitiveCall.node;}
   |	 transformCall {node = $transformCall.node;}
   |	 mathCall {node= $mathCall.node;}
@@ -91,6 +93,7 @@ functionCall returns [DCNode node]
   	|^(FUNC_CALL Rect exprList?) 	 {node = new RectangleNode($exprList.e,$FUNC_CALL.getLine());}
   	| ^(FUNC_CALL Curve exprList?)   {node = new CurveNode($exprList.e,$FUNC_CALL.getLine());}
   	| ^(FUNC_CALL Polygon exprList?) {node = new PolygonNode($exprList.e,$FUNC_CALL.getLine());}
+  	| ^(FUNC_CALL LShape exprList?) {node = new LShapeNode($exprList.e,$FUNC_CALL.getLine());}
   	;
   
   transformCall returns [DCNode node]
@@ -178,8 +181,8 @@ expression returns [DCNode node]
   |  lookup                                            {node = $lookup.node;}
   |  COLOR_CONSTANT									   {node = new AtomNode($COLOR_CONSTANT.text);}
   |	PI_CONSTANT                                        {node = new AtomNode(Math.PI);}
-  |WIDTH_CONSTANT                                       {node = new AtomNode(Manager.canvas.width);}
-  |HEIGHT_CONSTANT                                       {node = new AtomNode(Manager.canvas.height);}
+  |WIDTH_CONSTANT                                       {node = new AtomNode(Window.canvas.width);}
+  |HEIGHT_CONSTANT                                       {node = new AtomNode(Window.canvas.height);}
   ;
 
 list returns [DCNode node]
