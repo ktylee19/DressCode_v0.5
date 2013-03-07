@@ -10,6 +10,8 @@ import com.pixelmaid.dresscode.app.Manager;
 import com.pixelmaid.dresscode.app.Window;
 import com.pixelmaid.dresscode.drawing.datatype.Point;
 import com.pixelmaid.dresscode.drawing.math.Geom;
+import com.pixelmaid.dresscode.drawing.math.PolyBoolean;
+import com.pixelmaid.dresscode.drawing.math.Vec2d;
 
 public class Curve extends Polygon { //series of symmetrical curved lines grouped together in a single line
 	private int resolution = 20; // resolution of each curve
@@ -42,38 +44,51 @@ public class Curve extends Polygon { //series of symmetrical curved lines groupe
 		this.control1=control1;
 		this.control2=control2;
 		this.end=end;
-		this.origin=Geom.findCentroid((Polygon)this.toPolygon());
+		this.origin= Geom.getMidpoint(start, end);
 
 	}
 
 	@Override
 	public void draw(Embedded e){
 		//TODO: MAKE CURVE DRAW ORIGIN CORRECTLY
+		if(!this.getHide()){
 		appearance(e);
 		e.pushMatrix();
 		e.translate((float)(getOrigin().getX()),(float)(getOrigin().getY()));
 		e.rotate(PApplet.radians((float)getRotation()));
 		e.bezier((float)(start.getX()-getOrigin().getX()), (float)(start.getY()-getOrigin().getY()),(float)(control1.getX()-getOrigin().getX()), (float)(control1.getY()-getOrigin().getY()), (float)(control2.getX()-origin.getX()), (float)(control2.getY()-origin.getY()),(float)(end.getX()-origin.getX()), (float)(end.getY()-origin.getY()));
+		e.stroke(255,0,0);
+		e.strokeWeight(5);
+		e.point((float)(control1.getX()-getOrigin().getX()), (float)(control1.getY()-getOrigin().getY()));
+		e.stroke(0,0,255);
+		e.point((float)(control2.getX()-getOrigin().getX()), (float)(control2.getY()-getOrigin().getY()));
 		e.popMatrix();
-		/*if(this.getDrawOrigin()){
+		if(this.getDrawOrigin()){
 			this.drawOrigin(e);
-		}*/
+		}
+		}
 	}
 
 	
 	@Override
 	public void print(Embedded e){
 		//TODO: MAKE CURVE DRAW RELATIVE
+		if(!this.getHide()){
 		appearance(e);
 		e.pushMatrix();
 		e.translate((float)(getOrigin().getX()),(float)(getOrigin().getY()));
 		e.rotate(PApplet.radians((float)getRotation()));
 		e.bezier((float)start.getX(), (float)start.getY(),(float)control1.getX(), (float)control1.getY(), (float)control2.getX(), (float)control2.getY(),(float)end.getX(), (float)end.getY());
 		e.popMatrix();
+		}
 		
 	}
 
 
+	/*@Override
+	public void setAbsolute(){
+		//do nothing;
+	}*/
 
 	@Override
 	public Curve copy(){
@@ -94,8 +109,55 @@ public class Curve extends Polygon { //series of symmetrical curved lines groupe
 				double y = Window.canvas.bezierPoint((float)start.getY(), (float)control1.getY(), (float)control2.getY(), (float)end.getY(), t);
 				poly.addPoint(x,y);
 			}
+			poly.setPointsRelativeTo(this.origin);
 			return poly;
 		}
+	
+	@Override
+	public Drawable expand(){
+		
+		Polygon poly =  new Polygon();
+		
+			double xLast =0;
+			double yLast = 0;
+			for (int i = 0; i <= resolution; i++) {
+				float t = (float)i / (float)resolution;
+				double x = Window.canvas.bezierPoint((float)start.getX(), (float)control1.getX(), (float)control2.getX(), (float)end.getX(), t);
+				double y = Window.canvas.bezierPoint((float)start.getY(), (float)control1.getY(), (float)control2.getY(), (float)end.getY(), t);
+				if(i>0){
+					Line l = new Line(xLast,yLast,x,y);
+					l.setStrokeWeight(this.getStrokeWeight());
+					Polygon p = (Polygon)l.expand();
+					if(i==1){
+						poly = p;
+					}
+					else{
+						poly = (Polygon) PolyBoolean.union(poly, p);
+					}
+				}
+				
+				xLast = x;
+				yLast = y;
+			}
+			
+			poly.setFillColor(this.getStrokeColor());
+			poly.doStroke(false);
+			return poly;
+		
+
+	
+
+	}
+	
+	@Override
+	public Point pointAt(int i){
+		Polygon poly = this.toPolygon();
+		poly.setPointsAbsolute();
+		
+		Point p = poly.getPoints().get(i).copy();
+		
+		return p;
+	}
 			
 
 

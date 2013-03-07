@@ -3,6 +3,8 @@ package com.pixelmaid.dresscode.drawing.primitive2d;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import processing.core.PApplet;
+
 import com.pixelmaid.dresscode.app.Embedded;
 import com.pixelmaid.dresscode.app.Manager;
 import com.pixelmaid.dresscode.app.Window;
@@ -87,10 +89,12 @@ public class Drawable {
 		appearance(embedded);
 		embedded.pushMatrix();
 		embedded.translate((float)(getOrigin().getX()),(float)(getOrigin().getY()));
-		embedded.rotate((float)getRotation());
+		embedded.rotate(PApplet.radians((float)getRotation()));
 		
 				for(int j =0;j<this.children.size();j++){
+					if(!this.children.get(j).getHide()){
 						this.children.get(j).draw(embedded);
+					}
 					
 				}
 				
@@ -108,10 +112,12 @@ public class Drawable {
 			appearance(embedded);
 			embedded.pushMatrix();
 			embedded.translate((float)(getOrigin().getX()),(float)(getOrigin().getY()));
-			embedded.rotate((float)getRotation());
+			embedded.rotate(PApplet.radians((float)getRotation()));
 			
 					for(int j =0;j<this.children.size();j++){
+						if(!this.children.get(j).getHide()){
 							this.children.get(j).print(embedded);
+						}
 						
 					}
 					
@@ -160,11 +166,11 @@ public class Drawable {
 	//draws the origin of the drawable
 	public void drawOrigin(Embedded embedded){
 		embedded.stroke(0,0,0);
-		embedded.strokeWeight(8);
+		embedded.strokeWeight(3);
 		embedded.point((float)this.origin.getX(),(float)this.origin.getY());
 		
 		embedded.stroke(255,255,255);
-		embedded.strokeWeight(5);
+		embedded.strokeWeight(2);
 		embedded.point((float)this.origin.getX(),(float)this.origin.getY());
 	}
 	
@@ -438,6 +444,15 @@ public class Drawable {
 		return this;
 	}
 	
+	//expands all children of drawable;
+	public Drawable expand(){
+		for(int j =0;j<this.children.size();j++){
+			Drawable poly = this.children.get(j).expand();
+			this.children.set(j, poly);
+		}
+		return this;
+	}
+
 	
 	//adds new child and resets origin of drawable to accommodate child (must be overridden by subclasses)
 	public Drawable addToGroup(Drawable d) {
@@ -446,7 +461,7 @@ public class Drawable {
 	
 	public Drawable addToGroup(Drawable d,int index) {
 		d.removeFromCanvas();
-
+		
 			for(int i=0;i<this.children.size();i++){
 				this.children.get(i).setAbsolute();
 			}

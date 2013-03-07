@@ -11,6 +11,7 @@ import com.pixelmaid.dresscode.app.Window;
 
 import com.pixelmaid.dresscode.drawing.datatype.Point;
 import com.pixelmaid.dresscode.drawing.math.Geom;
+import com.pixelmaid.dresscode.drawing.math.PolyBoolean;
 
 public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 	private ArrayList<Point> points;
@@ -80,6 +81,7 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 	
 	@Override
 	public void draw(Embedded e){
+		if(!this.getHide()){
 		appearance(e);
 		//System.out.println("number of holes="+this.holes.size()+"number of points="+this.points.size());
 		e.pushMatrix();
@@ -99,10 +101,12 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 		if(this.getDrawOrigin()){
 			this.drawOrigin(e);
 		}
+		}
 	}
 	
 	@Override
 	public void print(Embedded e){
+		if(!this.getHide()){
 		appearance(e);
 		//System.out.println("number of holes="+this.holes.size()+"number of points="+this.points.size());
 		e.pushMatrix();
@@ -118,7 +122,7 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 			holes.get(i).print(e);
 		}
 		e.popMatrix();
-		
+		}
 	
 	}
 	
@@ -152,6 +156,46 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 		this.origin=p;
 	}
 	
+@Override	
+public Drawable expand(){
+		
+		Drawable poly =  new Drawable();
+			this.setPointsAbsolute();
+			double xLast =points.get(0).getX();
+			double yLast = points.get(0).getY();
+			for (int i = 1; i <= points.size(); i++) {
+				double x;
+				double y;
+				if(i<points.size()){
+					x=points.get(i).getX();
+					y=points.get(i).getY();
+				}
+				else{
+					 x=points.get(0).getX();
+					y=points.get(0).getY();
+				}
+				
+				
+					Line l = new Line(xLast,yLast,x,y);
+					l.setStrokeWeight(this.getStrokeWeight());
+					Polygon p = (Polygon)l.expand();
+					if(i==1){
+						poly = p;
+					}
+					else{
+						poly = PolyBoolean.union(poly, p);
+					}
+				
+				
+				xLast = x;
+				yLast = y;
+			}
+			
+			poly.setFillColor(this.getStrokeColor());
+			poly.doStroke(false);
+			return poly;
+
+	}
 	
 	
 	@Override
@@ -233,6 +277,16 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 		   return master;
 	}
 	
+	@Override
+	//returns child at a specific index- need to decide if should return a copy or child itself
+	public Point pointAt(int i){
+		this.setPointsAbsolute();
+		
+		Point p = this.points.get(i).copy();
+		this.setPointsRelativeTo(this.origin);
+		return p;
+	}
+
 	
 	
 	
@@ -312,6 +366,7 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 				TurtleStruct.angle = theta;
 			}
 
+			
 			
 
 
