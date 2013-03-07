@@ -1,0 +1,14 @@
+/*SVG Import example
+This example demonstrates how to import an svg and manipulate it. 
+NOTE: only works for simple svgs.
+*/
+
+//path must be modified for your svg
+heart1=import("/Users/Katie/Documents/Java/workspace/DressCode_v0.5/examples/basics/svgs/heart.svg");
+heart2 = copy(heart1); //create a copy of a
+move(heart2 ,600,200); //manipulate it in the same manner you would a primitive
+rotate(heart2,180);
+
+//path must be modified for your svg
+star=import("/Users/Katie/Documents/Java/workspace/DressCode_v0.5/examples/basics/svgs/star.svg");
+move(star,300,500);

@@ -1,0 +1,8 @@
+centerx=WIDTH/2;
+centery=HEIGHT/2;
+
+main=poly(centerx,centery, 4,200);
+topCorner=poly(centerx,centery-100,4,100);
+topTopCorner=poly(centerx,centery-150,4,50);
+
+

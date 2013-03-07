@@ -1,0 +1,26 @@
+hexSide=50;
+sqrt2=1.414;
+middleLength=hexSide/2*sqrt2;
+
+xCoord=100;
+yCoord=100;
+
+//create hex line sideways
+hexLine=group();
+repeat i=0:8:
+    add(hexLine,poly(xCoord+(hexSide*i),yCoord,6,hexSide));
+    fill(hexLine[i],40*i%255,40*i%255,90*i%255);
+end
+
+
+//copy lines
+myLine=[];
+repeat i=0:3:
+    add(myLine,copy(hexLine));
+    move(myLine[i],300,100+hexSide*i*sqrt2+15*i);
+    if i%2 == 1:
+        rotate(myLine[i],3.14);
+    end
+end
+
+
