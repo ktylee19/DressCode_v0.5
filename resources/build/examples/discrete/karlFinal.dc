@@ -1,0 +1,95 @@
+// PIECES KARL
+
+//1
+a=ellipse(100,HEIGHT/2);
+//2
+a1=ellipse(100,HEIGHT/2 - 0, 55,55);
+b=ellipse(150,HEIGHT/2 - 0,60,60);
+b = b-a1;
+//3
+b1=ellipse(150,HEIGHT/2,65,65);
+c=ellipse(200,HEIGHT/2 - 25 ,70,70);
+c = c-b1;
+//4
+c1=ellipse(200,HEIGHT/2 - 25,75,75);
+d=ellipse(250,HEIGHT/2 - 50,70,70);
+d = d-c1;
+//5
+d1=ellipse(250,HEIGHT/2 - 50,75,75);
+e=ellipse(300,HEIGHT/2 - 50,80,80);
+e = e-d1;
+//6
+e1=ellipse(300,HEIGHT/2 - 50,85,85);
+f=ellipse(350,HEIGHT/2 - 25,70,70);
+f = f-e1;
+//7
+f1=ellipse(350,HEIGHT/2 - 25,75,75);
+g=ellipse(400,HEIGHT/2 - 0,65,65);
+g = g-f1;
+
+//Mouth
+mouth=ellipse(100,100,50,50);
+cut1=ellipse(100,90,60,60);
+//cut2=rect(125,110,50,30);
+mouth=mouth-cut1;
+move(mouth,487,383);
+rotate(mouth,-10);
+
+//8
+g1=ellipse(400,HEIGHT/2 - 0,70,70);
+h=ellipse(450,HEIGHT/2-25,75,75);
+h = h-g1-mouth;
+
+blueHalf=group(a,c,e,g); 
+greenHalf=group(b,d,f,h); 
+fill(blueHalf,BLUE);
+fill(greenHalf,GREEN);
+noStroke(blueHalf);
+noStroke(greenHalf);
+
+
+eye=ellipse(450+25,HEIGHT/2-32,15,15);
+retina=ellipse(450+28, HEIGHT/2-31, 7,7);
+fill(eye,WHITE);
+fill(retina,BLUE);
+noStroke(eye);
+noStroke(retina);  
+
+
+//feet
+c1=ellipse(100,100,8,8);
+c2=ellipse(98,104,8,8);
+c3=ellipse(102,104,8,8);
+foot=c1+c2+c3;
+f2=copy(foot);
+f3=copy(foot);
+
+move(foot,385,428);
+rotate(foot,25);
+move(f2,400,430);
+move(f3,415,428);
+rotate(f3,-25);
+feetSet = foot+f2+f3;
+fill(feetSet,GREEN);
+noStroke(feetSet);
+feetSet2 = copy(feetSet);
+move(feetSet2, 150, 427);
+
+//Antennas
+
+stick=rect(100,100,40,8);
+rotate(stick,60);
+ball=ellipse(84,80,20);
+a1=ball+stick;
+move(a1,434,300);
+
+stick=rect(100,100,40,8);
+rotate(stick,-50);
+ball=ellipse(119,84,17);
+a2=ball+stick;
+move(a2,480,310);
+headCir=ellipse(450,HEIGHT/2-25,80,80);
+
+antennas=a1+a2-headCir;
+fill(antennas,GREEN);
+noStroke(antennas);
