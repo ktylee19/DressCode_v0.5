@@ -7,7 +7,6 @@ import processing.core.PApplet;
 
 import com.pixelmaid.dresscode.app.Embedded;
 import com.pixelmaid.dresscode.app.Manager;
-import com.pixelmaid.dresscode.app.Window;
 import com.pixelmaid.dresscode.drawing.datatype.Point;
 import com.pixelmaid.dresscode.drawing.math.Geom;
 import com.pixelmaid.dresscode.drawing.math.PolyBoolean;
@@ -56,6 +55,7 @@ public class Curve extends Polygon { //series of symmetrical curved lines groupe
 		e.pushMatrix();
 		e.translate((float)(getOrigin().getX()),(float)(getOrigin().getY()));
 		e.rotate(PApplet.radians((float)getRotation()));
+		e.scale((float)getScaleX(),(float)getScaleY());
 		e.bezier((float)(start.getX()-getOrigin().getX()), (float)(start.getY()-getOrigin().getY()),(float)(control1.getX()-getOrigin().getX()), (float)(control1.getY()-getOrigin().getY()), (float)(control2.getX()-origin.getX()), (float)(control2.getY()-origin.getY()),(float)(end.getX()-origin.getX()), (float)(end.getY()-origin.getY()));
 		e.stroke(255,0,0);
 		e.strokeWeight(5);
@@ -78,6 +78,7 @@ public class Curve extends Polygon { //series of symmetrical curved lines groupe
 		e.pushMatrix();
 		e.translate((float)(getOrigin().getX()),(float)(getOrigin().getY()));
 		e.rotate(PApplet.radians((float)getRotation()));
+		e.scale((float)getScaleX(),(float)getScaleY());
 		e.bezier((float)start.getX(), (float)start.getY(),(float)control1.getX(), (float)control1.getY(), (float)control2.getX(), (float)control2.getY(),(float)end.getX(), (float)end.getY());
 		e.popMatrix();
 		}
@@ -115,8 +116,9 @@ public class Curve extends Polygon { //series of symmetrical curved lines groupe
 		
 			for (int i = 0; i <= resolution; i++) {
 				float t = (float)i / (float)resolution;
-				double x = Window.canvas.bezierPoint((float)start.getX(), (float)control1.getX(), (float)control2.getX(), (float)end.getX(), t);
-				double y = Window.canvas.bezierPoint((float)start.getY(), (float)control1.getY(), (float)control2.getY(), (float)end.getY(), t);
+				PApplet p = new PApplet();
+				double x = p.bezierPoint((float)start.getX(), (float)control1.getX(), (float)control2.getX(), (float)end.getX(), t);
+				double y = p.bezierPoint((float)start.getY(), (float)control1.getY(), (float)control2.getY(), (float)end.getY(), t);
 				poly.addPoint(x,y);
 			}
 			poly.setPointsRelativeTo(this.origin);
@@ -132,8 +134,10 @@ public class Curve extends Polygon { //series of symmetrical curved lines groupe
 			double yLast = 0;
 			for (int i = 0; i <= resolution; i++) {
 				float t = (float)i / (float)resolution;
-				double x = Window.canvas.bezierPoint((float)start.getX(), (float)control1.getX(), (float)control2.getX(), (float)end.getX(), t);
-				double y = Window.canvas.bezierPoint((float)start.getY(), (float)control1.getY(), (float)control2.getY(), (float)end.getY(), t);
+				PApplet a = new PApplet();
+				a.init();
+				double x = a.bezierPoint((float)start.getX(), (float)control1.getX(), (float)control2.getX(), (float)end.getX(), t);
+				double y = a.bezierPoint((float)start.getY(), (float)control1.getY(), (float)control2.getY(), (float)end.getY(), t);
 				if(i>0){
 					Line l = new Line(xLast,yLast,x,y);
 					l.setStrokeWeight(this.getStrokeWeight());
@@ -148,6 +152,8 @@ public class Curve extends Polygon { //series of symmetrical curved lines groupe
 				
 				xLast = x;
 				yLast = y;
+				a.dispose();
+				a = null;
 			}
 			
 			poly.setFillColor(this.getStrokeColor());

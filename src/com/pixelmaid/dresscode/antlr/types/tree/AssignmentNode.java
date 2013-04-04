@@ -2,14 +2,13 @@ package com.pixelmaid.dresscode.antlr.types.tree;
 
 import com.pixelmaid.dresscode.antlr.types.Scope;
 import com.pixelmaid.dresscode.antlr.types.VarType;
-import com.pixelmaid.dresscode.app.Manager;
-import com.pixelmaid.dresscode.app.Window;
 import com.pixelmaid.dresscode.drawing.primitive2d.Drawable;
+import com.pixelmaid.dresscode.events.CustomEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssignmentNode implements DCNode {
+public class AssignmentNode extends NodeEvent implements DCNode {
 
   protected String identifier;
   protected List<DCNode> indexNodes;
@@ -36,8 +35,8 @@ public class AssignmentNode implements DCNode {
       scope.assign(identifier, value);
       if(value.isDrawable()){
     	  Drawable d = value.asDrawable();
-    	  d.removeFromCanvas();
-    	  Window.canvas.addDrawable("drawable",-1,d);
+    	  //this.drawableEvent(CustomEvent.REMOVE_DRAWABLE, d);
+    	 // this.drawableEvent(CustomEvent.DRAWABLE_CREATED, d);
       }
     }
     else { // a possible list-lookup and reassignment

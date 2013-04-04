@@ -1,19 +1,14 @@
 package com.pixelmaid.dresscode.antlr.types.tree.functions.transforms;
 
-import java.util.List;
-
 import com.pixelmaid.dresscode.antlr.types.VarType;
 import com.pixelmaid.dresscode.antlr.types.tree.DCNode;
-import com.pixelmaid.dresscode.app.Manager;
-import com.pixelmaid.dresscode.app.Window;
+import com.pixelmaid.dresscode.antlr.types.tree.NodeEvent;
 import com.pixelmaid.dresscode.drawing.math.PolyBoolean;
-import com.pixelmaid.dresscode.drawing.primitive2d.Color;
 import com.pixelmaid.dresscode.drawing.primitive2d.Drawable;
-import com.pixelmaid.dresscode.drawing.primitive2d.Polygon;
-import com.pixelmaid.dresscode.drawing.primitive2d.PrimitiveInterface;
+import com.pixelmaid.dresscode.events.CustomEvent;
 
 
-public class MergeNode implements DCNode {
+public class MergeNode extends NodeEvent implements DCNode {
 
 	protected DCNode param;
 
@@ -38,8 +33,8 @@ public class MergeNode implements DCNode {
     		
     		Drawable draw = d.asDrawable();
     		dNew = PolyBoolean.merge(draw);
-    		draw .removeFromCanvas();
-    		Window.canvas.addDrawable("poly",-1,dNew);
+    		this.drawableEvent(CustomEvent.REMOVE_DRAWABLE, draw);
+    		this.drawableEvent(CustomEvent.DRAWABLE_CREATED, dNew);
     		return new VarType(dNew);
     		}
     	}

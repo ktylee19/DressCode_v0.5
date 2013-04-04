@@ -6,19 +6,20 @@ import java.util.Collections;
 import processing.core.PApplet;
 
 import com.pixelmaid.dresscode.app.Embedded;
-import com.pixelmaid.dresscode.app.Manager;
-import com.pixelmaid.dresscode.app.Window;
 import com.pixelmaid.dresscode.drawing.datatype.CmpX;
 import com.pixelmaid.dresscode.drawing.datatype.CmpY;
 import com.pixelmaid.dresscode.drawing.datatype.Point;
 import com.pixelmaid.dresscode.drawing.math.Geom;
+import com.pixelmaid.dresscode.events.CustomEvent;
+import com.pixelmaid.dresscode.events.CustomEventListener;
+import com.pixelmaid.dresscode.events.EventSource;
 
-public class Drawable {
+public class Drawable implements DrawableEvent {
 
 	public  ArrayList<Drawable> children =new ArrayList<Drawable>(); //stores all children of a drawable
 	
 	
-	private double rotation=0;
+	protected double rotation=0;
 	private double scaleX = 1;
 	private double scaleY = 1;
 	private boolean hide= false;
@@ -31,10 +32,14 @@ public class Drawable {
 	private boolean doFill = true;
 	private boolean doStroke=true;
 	private boolean drawOrigin=true;
-	
+	private ArrayList<Hole> holes = new ArrayList<Hole>();
+
 	protected final static int DEFAULT_WIDTH= 50;
 
-	
+	private EventSource es;
+
+
+	private String error; 
 	
 	
 	//===============PRIVATE METHODS=================//
@@ -56,7 +61,25 @@ public class Drawable {
 		d.setParent(null);
 	}
 	
+	//adds a hole
+	public void addHole(Hole h){
+		holes.add(h);
+		h.setParent(this);
+
+	}
+	//returns all holes
+	public ArrayList<Hole> getHoles(){
+		return this.holes;
+	}
 	
+	public Drawable holesToDrawable(){
+		Drawable d = new Drawable();
+		for(int i=0;i<holes.size();i++){
+			Polygon h = holes.get(i).toPolygon();
+			d.addToGroup(h);
+		}
+		return d;
+	}
 	
 	//sets the parent of the drawable
 	protected void setParent(Drawable p){
@@ -81,6 +104,9 @@ public class Drawable {
 		this.strokeColor= new Color();
 		setFillColor(255,255,255);
 		setStrokeColor(0,0,0);
+		strokeWeight = 1;
+		holes = new ArrayList<Hole>();
+		es= new EventSource();
 	}
 
 	//-------------DRAW AND PRINT METHODS-----------------//
@@ -92,10 +118,17 @@ public class Drawable {
 		embedded.pushMatrix();
 		embedded.translate((float)(getOrigin().getX()),(float)(getOrigin().getY()));
 		embedded.rotate(PApplet.radians((float)getRotation()));
-		
+		embedded.scale((float)getScaleX(),(float)getScaleY());
 				for(int j =0;j<this.children.size();j++){
 					if(!this.children.get(j).getHide()){
 						this.children.get(j).draw(embedded);
+					}
+					
+				}
+				
+				for(int j =0;j<this.holes.size();j++){
+					if(!this.holes.get(j).getHide()){
+						this.holes.get(j).draw(embedded);
 					}
 					
 				}
@@ -119,6 +152,13 @@ public class Drawable {
 					for(int j =0;j<this.children.size();j++){
 						if(!this.children.get(j).getHide()){
 							this.children.get(j).print(embedded);
+						}
+						
+					}
+					
+					for(int j =0;j<this.holes.size();j++){
+						if(!this.holes.get(j).getHide()){
+							this.holes.get(j).print(embedded);
 						}
 						
 					}
@@ -153,7 +193,7 @@ public class Drawable {
 			
 		}
 		else{
-			e.noStroke();
+			//e.noStroke();
 		}
 		e.strokeWeight((float)this.getStrokeWeight());
 		
@@ -188,6 +228,9 @@ public class Drawable {
 			for(int i=0;i<this.children.size();i++){
 				this.children.get(i).setStrokeWeight(w);
 			}
+			for(int i=0;i<this.holes.size();i++){
+				this.holes.get(i).setStrokeWeight(w);
+			}
 		}
 	
 	//returns the stroke weight value
@@ -201,6 +244,9 @@ public class Drawable {
 		for(int i=0;i<this.children.size();i++){
 			this.children.get(i).setFillColor(r, g, b);
 		}
+		/*for(int i=0;i<this.holes.size();i++){
+			this.holes.get(i).setFillColor(r, g, b);
+		}*/
 	}
 	
 	//sets the fill color by a color constant
@@ -208,6 +254,9 @@ public class Drawable {
 		this.fillColor=c;
 		for(int i=0;i<this.children.size();i++){
 			this.children.get(i).setFillColor(c);
+		}
+		for(int i=0;i<this.holes.size();i++){
+			this.holes.get(i).setFillColor(c);
 		}
 	}
 	
@@ -222,6 +271,9 @@ public class Drawable {
 		for(int i=0;i<this.children.size();i++){
 			this.children.get(i).setStrokeColor(r,g,b);
 		}
+		for(int i=0;i<this.holes.size();i++){
+			this.holes.get(i).setStrokeColor(r,g,b);
+		}
 	}
 		
 	//sets the stroke color with a color constant
@@ -229,6 +281,9 @@ public class Drawable {
 		this.strokeColor=c;
 		for(int i=0;i<this.children.size();i++){
 			this.children.get(i).setStrokeColor(c);
+		}
+		for(int i=0;i<this.holes.size();i++){
+			this.holes.get(i).setStrokeColor(c);
 		}
 	}
 	
@@ -244,6 +299,10 @@ public class Drawable {
 		for(int i=0;i<this.children.size();i++){
 			this.childAt(i).doFill(f);
 		}
+		for(int i=0;i<this.holes.size();i++){
+			this.holes.get(i).doFill(f);
+		}
+		
 	}
 	
 	//sets whether or not the drawable has a stroke
@@ -251,6 +310,9 @@ public class Drawable {
 		doStroke=f;
 		for(int i=0;i<this.children.size();i++){
 			this.childAt(i).doStroke(f);
+		}
+		for(int i=0;i<this.holes.size();i++){
+			this.holes.get(i).doStroke(f);
 		}
 	}
 	
@@ -292,9 +354,13 @@ public class Drawable {
 		drawOrigin=d;
 	}
 
+	public void addToCanvas(){
+		this.fireEvent(CustomEvent.ADD_DRAWABLE);
+	}
+	
 	//removes drawable from canvas
 	public void removeFromCanvas(){
-		Window.canvas.removeDrawable(this);
+		this.fireEvent(CustomEvent.REMOVE_DRAWABLE);
 	}
 
 	//resets origin to new point resulting in the moving of the object
@@ -323,6 +389,9 @@ public class Drawable {
 			for(int i=0;i<this.children.size();i++){
 				this.children.get(i).rotateWithFocus(theta, focus);
 				origins.add(this.children.get(i).getOrigin());
+			}
+			for(int i=0;i<this.children.size();i++){
+				this.holes.get(i).rotateWithFocus(theta, focus);
 			}
 			
 			
@@ -394,6 +463,9 @@ public class Drawable {
 		for(int i=0;i<this.children.size();i++){
 			d.add(this.children.get(i).copy());
 		}
+		for(int i=0;i<this.holes.size();i++){
+			d.addHole(this.holes.get(i).copy());
+		}
 				
 		return d;
 		
@@ -403,14 +475,14 @@ public class Drawable {
 	
 	 public double getWidth(){
 		 Rectangle bb = this.findBoundingBox();
-		   double width= bb.getWidth();
+		   double width= bb.getWidth()*getScaleX();
 		   return width;
 		   
 	 }
 	   
 	 public double getHeight(){
 		 Rectangle bb = this.findBoundingBox();
-		   double height= bb.getHeight();
+		   double height= bb.getHeight()*getScaleX();
 		   return height;
 	 }
 
@@ -515,7 +587,7 @@ public class Drawable {
 	
 
 	//sets the drawable's origin relative to a new origin
-	private void setRelativeTo(Point p) {
+	protected void setRelativeTo(Point p) {
 		this.origin= this.origin.difference(p);	
 	}
 	
@@ -526,6 +598,10 @@ public class Drawable {
 				
 					children.get(i).setRelativeTo(p);	
 			}
+			for(int i=0;i<this.holes.size();i++){
+				
+				holes.get(i).setRelativeTo(p);	
+		}
 	}
 	
 	//sets the drawable to its absolute position with respect to its parent
@@ -542,13 +618,33 @@ public class Drawable {
 		return orphan;
 	}
 	
+	private Hole returnAbsoluteHoleAt(int i){
+		Hole orphan = this.holes.get(i).copy();
+		orphan.setAbsolute();
+		
+		return orphan;
+	}
+	
 	//converts all children of the drawable to polygons. (must be overridden by subclasses)
 	public Drawable toPolygon(){
 		for(int j =0;j<this.children.size();j++){
 			Drawable poly = this.children.get(j).toPolygon();
 			this.children.set(j, poly);
 		}
+		
+		
 		return this;
+	}
+	
+	//used when polygon only has one child
+	public Polygon simplify(){
+		Polygon p = (Polygon)this.childAt(0).toPolygon();
+		p.setParent(null);
+		p.setOrigin(this.getOrigin());
+		for(int j =0;j<this.holes.size();j++){
+			p.addHole(holes.get(j));
+		}
+		return p;
 	}
 	
 	//expands all children of drawable;
@@ -557,6 +653,11 @@ public class Drawable {
 			Drawable poly = this.children.get(j).expand();
 			this.children.set(j, poly);
 		}
+		for(int j =0;j<this.holes.size();j++){
+			Drawable poly = this.holes.get(j).expand();
+			this.addToGroup(poly);
+		}
+		this. holes = new ArrayList<Hole> ();
 		return this;
 	}
 
@@ -567,10 +668,13 @@ public class Drawable {
 	}
 	
 	public Drawable addToGroup(Drawable d,int index) {
-		d.removeFromCanvas();
+		this.drawableEvent(CustomEvent.REMOVE_DRAWABLE, d);
 		
 			for(int i=0;i<this.children.size();i++){
 				this.children.get(i).setAbsolute();
+			}
+			for(int i=0;i<this.holes.size();i++){
+				this.holes.get(i).setAbsolute();
 			}
 		
 		
@@ -594,10 +698,22 @@ public class Drawable {
 
 	}
 	
+	public Drawable addHoleToGroup(Hole h) {
+		
+		
+		this.addHole(h);
+	
+		h.setRelativeTo(this.origin);
+	return this;
+	}
+	
 	//resets the origin when a member of a group is moved, added, adjusted or removed
 	public void resetOrigin(){
 		for(int i=0;i<this.children.size();i++){
 			this.children.get(i).setAbsolute();
+		}
+		for(int i=0;i<this.holes.size();i++){
+			this.holes.get(i).setAbsolute();
 		}
 		ArrayList<Point> origins = new ArrayList<Point>();
 		if(this.children.size()>1){
@@ -620,7 +736,11 @@ public class Drawable {
 		for(int i=0;i<this.children.size();i++){
 			this.children.get(i).setAbsolute();
 		}
-		d.removeFromCanvas(); // remove drawable from canvas
+		for(int i=0;i<this.holes.size();i++){
+			this.holes.get(i).setAbsolute();
+		}
+	    	
+		this.drawableEvent(CustomEvent.REMOVE_DRAWABLE, d);
 		this.remove(d);
 		
 		
@@ -641,7 +761,7 @@ public class Drawable {
 			//return this.children.get(0);
 		}
 		else if(this.children.size()==0){
-			this.removeFromCanvas(); // if no children, remove empty group
+			this.drawableEvent(CustomEvent.REMOVE_DRAWABLE, this); // if no children, remove empty group
 			
 		}
 		return d;
@@ -714,9 +834,18 @@ public class Drawable {
 		//recursive condense function
 		public void condenseRec(Drawable d,Drawable parent){
 			ArrayList<Drawable> currentChildren = d.getChildren();
+			ArrayList<Hole> currentHoles = d.getHoles();
 			//System.out.println("number of children = "+d.numChildren());
+			//System.out.println("condensing holes");
+			for(int i=0;i<currentHoles.size(); i++){
+				Hole h = d.returnAbsoluteHoleAt(i);
+				//Window.canvas.addDrawable("hole", 0, h);
+				parent.addHoleToGroup(h);
+			}
+		
 			for(int i=currentChildren.size()-1;i>=0; i--){
 				Drawable orphan = d.returnAbsoluteAt(i);
+		
 				//System.out.println("checking child at = "+i +":"+orphan);
 				if (orphan.numChildren()!=0){ //is not a polygon
 					//System.out.println("orphan is not a polygon");
@@ -728,12 +857,44 @@ public class Drawable {
 					
 					parent.addToGroup(orphan);	
 				}
+				
 			}
 			
 			
 		}
-	
 
+		
+		
+///==================EVENT SOURCE METHODS================
+		@Override
+		public Drawable getDrawable() {
+			return this;
+		}
+
+		@Override
+		public String getError() {
+			return this.error;
+		}
+
+		@Override
+		public void fireEvent(int event) {
+			this.es.fireEvent(this,event);
+			
+		}
+		@Override
+		public void drawableEvent(int event, Drawable d) {
+			this.es.fireDrawableEvent(this,event,d);
+			
+		}
+		@Override
+		public void addEventListener(CustomEventListener listener) {
+			this.es.addEventListener(listener);
+			
+		}
+		@Override
+		public void removeEventListener(CustomEventListener listener) {
+			this.es.removeEventListener(listener);
+		}
 
 	//boolean returns to check type of drawables
 	/*public boolean isDrawable(){

@@ -66,7 +66,9 @@ public class LShape extends Polygon {
 			e.pushMatrix();
 			e.translate((float)(getOrigin().getX()),(float)(getOrigin().getY()));
 			e.rotate((float)Math.toRadians(getRotation()));
+			e.scale((float)getScaleX(),(float)getScaleY());
 			e.shape(shape,(float)(x-this.width/2),(float)(y-this.height/2));
+			
 			e.popMatrix();
 			
 			if(this.getDrawOrigin()){
@@ -92,21 +94,17 @@ public class LShape extends Polygon {
 		
 
 		
-		/*//TODO: implement polygon conversion
+		//TODO: implement polygon conversion
 		//converts shape to polygon
-		public Drawable toPolygon() {
+		public Polygon toPolygon() {
 			SVGReader r = new SVGReader();
 			r.readSVGFile(this.getPath());
-			Drawable d = r.getDrawable();
+			Polygon d = (Polygon) r.getDrawable().childAt(0);
 			copyParameters(this,d);
-			
-			
 			return d;
 		}
 		
-		public Polygon toPolygon() {
-			//return this.toPolygon()
-		}
-			*/
+	
+			
 	
 }

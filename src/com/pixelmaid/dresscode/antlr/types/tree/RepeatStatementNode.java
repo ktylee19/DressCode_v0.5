@@ -2,11 +2,9 @@ package com.pixelmaid.dresscode.antlr.types.tree;
 
 import com.pixelmaid.dresscode.antlr.types.Scope;
 import com.pixelmaid.dresscode.antlr.types.VarType;
-import com.pixelmaid.dresscode.app.Manager;
-import com.pixelmaid.dresscode.app.Window;
 import com.pixelmaid.dresscode.drawing.primitive2d.Drawable;
 
-public class RepeatStatementNode implements DCNode {
+public class RepeatStatementNode extends NodeEvent implements DCNode {
 
     private String identifier;
     private DCNode startExpr;
@@ -14,7 +12,7 @@ public class RepeatStatementNode implements DCNode {
     private DCNode incrementExpr;
     private DCNode block;
     protected Scope scope;
-    private DCNode returnStatement;
+
     private boolean lookup;
 
 
@@ -29,14 +27,11 @@ public class RepeatStatementNode implements DCNode {
         System.out.println("lookup for repeat node ="+l);
     }
     
-    public void addReturn(DCNode stat) {
-        returnStatement = stat;
-      }
+ 
 
     @Override
     public VarType evaluate() {
     	Drawable d = new Drawable();
-    	boolean drawAdded=false;
         double start = startExpr.evaluate().asDouble().intValue();
         double stop = stopExpr.evaluate().asDouble().intValue();
         double increment = 1.0;
@@ -51,7 +46,6 @@ public class RepeatStatementNode implements DCNode {
             	 Drawable d2 = returnValue.asDrawable();
             	 d.addToGroup(d2);
             	 d2.removeFromCanvas();
-            	 drawAdded=true;
             	 //System.out.println("added drawable in for loop at+"+i);
           	  
             }
@@ -61,20 +55,8 @@ public class RepeatStatementNode implements DCNode {
                 
             }*/
         }
-     // return VOID or returnStatement.evaluate() if it's not null
-   	 if(returnStatement ==null){
-   		 if(drawAdded){
-   			 //TODO: add actual line number instead of 0 here
-   			Window.canvas.addDrawable("drawable",-1,d);
-   			 return new VarType(d);
-   		 }
-   		 else{
+   
    			 return VarType.VOID;
-   		 }
-   	 }
-   	 else{
-   		return returnStatement.evaluate();
-   	 }
-
     }
+
 }

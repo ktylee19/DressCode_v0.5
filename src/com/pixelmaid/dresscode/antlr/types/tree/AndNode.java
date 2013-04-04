@@ -1,10 +1,10 @@
 package com.pixelmaid.dresscode.antlr.types.tree;
 
 import com.pixelmaid.dresscode.antlr.types.*;
-import com.pixelmaid.dresscode.app.Window;
 import com.pixelmaid.dresscode.drawing.math.PolyBoolean;
 import com.pixelmaid.dresscode.drawing.primitive2d.Drawable;
-public class AndNode implements DCNode {
+import com.pixelmaid.dresscode.events.CustomEvent;
+public class AndNode extends NodeEvent implements DCNode {
 
     private DCNode lhs;
     private DCNode rhs;
@@ -27,11 +27,11 @@ public class AndNode implements DCNode {
         if(a.isDrawable() && b.isDrawable()) {
         	Drawable aP = a.asDrawable();
         	Drawable bP = b.asDrawable();
-        	aP.removeFromCanvas();
-        	bP.removeFromCanvas();
+        	this.drawableEvent(CustomEvent.REMOVE_DRAWABLE, aP);
+        	this.drawableEvent(CustomEvent.REMOVE_DRAWABLE, bP);
         	Drawable d = PolyBoolean.intersection(aP,bP);
         	 //TODO: add actual line number instead of 0 here
-    		Window.canvas.addDrawable("drawable",-1,d);
+        	this.drawableEvent(CustomEvent.DRAWABLE_CREATED, d);
         	return new VarType(d);
           }
 

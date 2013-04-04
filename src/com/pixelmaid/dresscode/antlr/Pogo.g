@@ -1,4 +1,4 @@
-grammar Pogo;
+					grammar Pogo;
 
 options {
   output=AST;
@@ -33,6 +33,7 @@ tokens {
   import com.pixelmaid.dresscode.antlr.types.*; 
   import java.util.Map;
   import java.util.HashMap;
+  import com.pixelmaid.dresscode.data.*;
 }
 
 @lexer::header {
@@ -41,7 +42,13 @@ tokens {
 
 @parser::members {
   public Map<String, FunctionType> functions = new HashMap<String, FunctionType>();
+  public DrawableManager drawableManager;
+  private int widthParam, heightParam;
   
+  public PogoParser(CommonTokenStream tokens){
+  	super(tokens);
+
+  }
   private void defineFunction(String id, Object idList, Object block) {
 
     // `idList` is possibly null! Create an empty tree in that case. 
@@ -122,6 +129,8 @@ functionCall
    | Group	'(' exprList? ')'-> ^(FUNC_CALL Group exprList?)
    | Expand	'(' expression ')'-> ^(FUNC_CALL Expand expression)
    | Merge	'(' expression ')'-> ^(FUNC_CALL Merge expression)
+   | Scale '(' exprList? ')'-> ^(FUNC_CALL Scale exprList?)
+   //| Get	'('expression ')'->^(FUNC_CALL Get expression)
    ;
    
    mathCall
