@@ -1,0 +1,27 @@
+zigWidth=100;
+startX=100;
+startY=400;
+
+//Don't need to modify
+Y=startY;
+X=startX;
+zigLine=group();
+
+repeat i=1:5:
+    //Creates initial zig width. 
+    X=startX+zigWidth;
+    if i%2==0: //zig up
+        Y=Y-zigWidth;
+        Y2=Y+zigWidth;
+    else: //zig down
+        Y=Y+zigWidth;
+        Y2=Y-zigWidth;
+    end
+    //initial zig width
+    line(startX,startY,X,Y);
+    //reflected line
+    line(0,0,10,Y2);
+    startX=X;
+    startY=Y;
+    
+end

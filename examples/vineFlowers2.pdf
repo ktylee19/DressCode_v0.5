@@ -1,0 +1,88 @@
+//Petal
+len=100;
+x1 = curve(0,0,len,len*0.05,len*0.85,len*0.85,len,len);
+x2 = curve(0,0,len*0.05,len,len*0.85,len*0.85,len,len);
+petal=group(x1,x2);
+
+
+//Flower
+flower=group();
+repeat i=1:7:
+    add(flower,rotate(copy(petal),51.5*i));
+end
+move(flower,300,200);
+merge(flower);
+
+
+//Vine
+l = 300;
+c1 = curve(0,0,l,l*0.1,l*0.25,l*0.65,l,l);
+rotate(c1,140);
+noFill(c1);
+myVine=group(c1);
+move(myVine,500,400);
+
+//leaf1
+f1=copy(flower);
+rotate(f1,-20);
+move(f1,500,430);
+line(470,420,500,430); //connect
+
+
+/*
+//leaf2
+leaf2=copy(leafM);
+rotate(leaf2,20);
+move(leaf2,320,450); 
+line(310,440,320,450); //connect
+
+//leaf3
+leaf3=copy(leafL);
+rotate(leaf3,-10);
+move(leaf3,120,360);
+line(100,359,120,360);
+
+//leaf4
+leaf4=copy(leafS);
+rotate(leaf4,-90);
+move(leaf4,500,400);
+
+//leaf5
+leaf5=copy(leafM);
+rotate(leaf5,-120);
+move(leaf5,340,430);
+noFill(curve(300,432,310,440,320,440,340,430));
+
+//leaf6
+leaf3=copy(leafL);
+rotate(leaf3,-120);
+move(leaf3,120,350);
+line(100,359,120,360);
+*/
+/* Lined Spiral1 */
+/*
+  //parameters
+  xold=WIDTH/2; //previous x value
+  yold=HEIGHT/2; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 4; //line amplifier
+  degree = -11; //rotation degree
+
+  
+  //iteration for spiral
+  repeat i=1:35:
+    //create coordinates parametrically
+    xnew = a * i * cos(i*degree+100) + WIDTH/2;
+    ynew = a * i * sin(i*degree+300) + HEIGHT/2;
+    weight(line(xold, yold, xnew, ynew),4);
+    
+    //create extending lines:
+    //weight(line(centerx, centery, xnew,ynew),4);
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end
+*/

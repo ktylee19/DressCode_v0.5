@@ -1,0 +1,32 @@
+//Pentrose Tiling
+//http://en.wikipedia.org/wiki/File:Penrose_Tiling_(Rhombi).svg
+
+/*
+s1=poly(300,300,6,100);
+s2=ellipse(300,300,172);
+myGroup = group(s1,s2);
+my2=copy(myGroup);
+move(my2,100,100);
+*/
+
+X=300;
+Y=300;
+s1=50;
+s2=50;
+angleA=60;
+radiusA=3;
+
+
+//create a loop around 360 degrees to hit every angle
+repeat i=0:5: 
+    angle=angleA*i;
+    //create a second loop
+    //shape at x radius away from the current location
+    repeat j=0:5:
+        radius=radiusA*j;
+        poly(X,Y+radius,6,s1*j);
+        ellipse(X,Y+radius,s2*j);
+        //rotate(a,angle,X,Y);
+        //rotate(b,angle,X,Y);
+    end
+end

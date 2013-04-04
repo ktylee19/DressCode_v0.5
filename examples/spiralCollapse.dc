@@ -1,0 +1,54 @@
+/* Lined Spiral1 */
+  /*
+  //parameters
+  xold=WIDTH/2; //previous x value
+  yold=HEIGHT/2; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 4; //line amplifier
+  degree = -11; //rotation degree
+  extraRot=-100;
+  weightLine=10;
+ 
+  //iteration for spiral
+  repeat i=1:40:
+    //create coordinates parametrically
+    xnew = a * i * cos(i*degree+extraRot) + WIDTH/2;
+    ynew = a * i * sin(i*degree+extraRot) + HEIGHT/2;
+    line(xold, yold, xnew, ynew);
+    
+    //create extending lines:
+    line(centerx, centery, xnew,ynew);
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end
+  */
+
+/* Lined Spiral2 */
+  //parameters
+  xold=WIDTH/2+200; //previous x value
+  yold=HEIGHT/2+120; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 10; //line amplifier
+  degree = -11; //rotation degree
+  extraRot=-100;
+  weightLine=10;
+  //iteration for spiral
+  repeat i=1:40:
+    //create coordinates parametrically
+    xnew = a * i * cos(i*degree+extraRot) + WIDTH/2+200;
+    ynew = a * i * sin(i*degree+extraRot) + HEIGHT/2+120;
+    weight(line(xold, yold, xnew, ynew),weightLine);
+    
+    //create extending lines:
+    weight(line(centerx, centery, xnew,ynew),weightLine);
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end

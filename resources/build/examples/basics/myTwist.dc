@@ -1,0 +1,24 @@
+/*
+//curve variables
+sX = 0; //starting x coordinate for curve
+sY = 0; //starting y coordinate for curve
+l = 200; //length of curve
+
+//loop variables
+num= 20; //number of times the loop will repeat
+radius = 0;
+
+
+//create two curves using different percentages of the curve variables
+c1 = curve(sX,sY,l,l*0.05,l*0.25,l*0.85,sX+l,sY+l);
+c2 = curve(sX,sY,l*0.05,l,l*0.85,l*0.25,sX+l,sY+l);
+
+cGroup = group(c1,c2); //group two curves
+myFrame=poly(160,160,4,130);
+*/
+
+
+len=200;
+x1 = curve(0,0,len,len*0.05,len*0.85,len*0.85,len,len);
+x2 = curve(0,0,len*0.05,len,len*0.85,len*0.85,len,len);
+petal=group(x1,x2);

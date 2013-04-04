@@ -1,0 +1,40 @@
+//Fibonacci Spiral
+//Start with 1,1. 
+x0=50;
+x1=50;
+
+//where 50~1
+
+/* BASE CASE */
+spiral=group();
+center=point(400,400);
+repeat i=0:2:
+    theta=90*i;
+    add(spiral,line(center,x0,theta));
+end
+//ellipse(spiral[0].end.x,spiral[0].end.y, 100);
+
+//move(spiral,100,100);
+
+/* MORE CASES */
+repeat j=3:5:
+    y=x1+x0; // find new value
+    x0=x1; //reset old holds
+    x1=y; // reset old holds
+    theta=90*j%360;
+    add(spiral,line(center,y,theta));    
+end
+
+repeat k=1:5:
+    // connect line with the one before it. 
+    line(spiral[k-1].end.x, spiral[k-1].end.y, spiral[k].end.x, spiral[k].end.y);
+    //a=;
+    //move(ellipse(100,100,20),spiral[k]);
+end
+
+/*
+a=line(center,50,0);
+//center2=point(400,400);
+b=line(center,50,90);
+//line3=(center,50,180);
+*/

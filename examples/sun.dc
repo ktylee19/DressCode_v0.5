@@ -1,0 +1,20 @@
+a=rect(300,300,100,20);
+b=rect(300,280,100,10);
+c=rect(300,320,100,10);
+myGroup=group(a,b,c);
+//rect(300,300,20,100);
+frame=noFill(poly(300,300,5,50));
+ray=frame && myGroup;
+//move(ray,(100,100));
+
+x=300;
+y=300;
+radius=100;
+
+repeat i=1:9:
+    newShape=copy(ray);
+    move(newShape,(x+radius,y));
+    rotate(newShape,40*i,300,300);
+end
+
+centre=ellipse(x,y,140);

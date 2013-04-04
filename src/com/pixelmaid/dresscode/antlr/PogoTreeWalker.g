@@ -12,7 +12,8 @@ options {
   import com.pixelmaid.dresscode.antlr.types.*; 
   import com.pixelmaid.dresscode.antlr.types.tree.*; 
   import com.pixelmaid.dresscode.antlr.types.tree.functions.*; 
-   import com.pixelmaid.dresscode.antlr.types.tree.functions.transforms.*; 
+  import com.pixelmaid.dresscode.antlr.types.tree.properties.*; 
+  import com.pixelmaid.dresscode.antlr.types.tree.functions.transforms.*; 
   import java.util.Map;
   import java.util.HashMap;
   import com.pixelmaid.dresscode.app.Window;
@@ -95,6 +96,7 @@ functionCall returns [DCNode node]
   	| ^(FUNC_CALL Curve exprList?)   {node = new CurveNode($exprList.e,$FUNC_CALL.getLine());}
   	| ^(FUNC_CALL Polygon exprList?) {node = new PolygonNode($exprList.e,$FUNC_CALL.getLine());}
   	| ^(FUNC_CALL LShape exprList?) {node = new LShapeNode($exprList.e,$FUNC_CALL.getLine());}
+  	|  ^(FUNC_CALL Point exprList?) {node = new PointNode($exprList.e,$FUNC_CALL.getLine());}
   	;
   
   transformCall returns [DCNode node]
@@ -109,6 +111,7 @@ functionCall returns [DCNode node]
    |^(FUNC_CALL Hide expression) {node = new HideNode($expression.node,$FUNC_CALL.getLine());}
    |^(FUNC_CALL Group exprList?) {node = new GroupNode($exprList.e,$FUNC_CALL.getLine());}
    |^(FUNC_CALL Expand expression){node = new ExpandNode($expression.node,$FUNC_CALL.getLine());}
+   | ^(FUNC_CALL Merge expression){node = new MergeNode($expression.node,$FUNC_CALL.getLine());}
    ;
    
    mathCall returns [DCNode node]
@@ -191,20 +194,52 @@ list returns [DCNode node]
   :  ^(LIST exprList?) {node = new ListNode($exprList.e);}
   ;
 
+
+//START HERE TOMOROW FIXING DOT LOOKUP WITH MULTIPLE INDEXES
 lookup returns [DCNode node]
-  :  ^(LOOKUP functionCall i=indexes?) {node = $i.e != null ? new LookupNode($functionCall.node, $indexes.e) : $functionCall.node;}
+ 	:^(DOTPROPERTY functionCall dotProperty){node = new DotPropertyNode($functionCall.node, $dotProperty.e);}
+ 	|^(DOTPROPERTY Identifier dotProperty){node = new DotPropertyNode(new IdentifierNode($Identifier.text, currentScope), $dotProperty.e);}
+ 
+ // :  ^(DOTPROPERTY functionCall d=dotLookup[$functionCall.node]) {node = $d.node;}
+  //|  ^(DOTPROPERTY Identifier d=dotLookup[new IdentifierNode($Identifier.text, currentScope)]) {node = $d.node;}
+    
+  
+  | ^(LOOKUP functionCall i=indexes?) {node = $i.e != null ? new LookupNode($functionCall.node, $indexes.e) : $functionCall.node;}
   |  ^(LOOKUP list i=indexes?)         {node = $i.e != null ? new LookupNode($list.node, $indexes.e) : $list.node;}
   |  ^(LOOKUP expression i=indexes?)   {node = $i.e != null ? new LookupNode($expression.node, $indexes.e) : $expression.node;}
   |  ^(LOOKUP Identifier i=indexes?)   {node = $i.e != null ? new LookupNode(new IdentifierNode($Identifier.text, currentScope), $indexes.e) : new IdentifierNode($Identifier.text, currentScope);}
   |  ^(LOOKUP String i=indexes?)       {node = $i.e != null ? new LookupNode(new AtomNode($String.text), $indexes.e) : new AtomNode($String.text);}
-  |  ^(LOOKUP forStatement i=indexes?)   {node = $i.e != null ? new LookupNode($forStatement.node, $indexes.e) : $forStatement.node;}
-  |  ^(LOOKUP whileStatement i=indexes?)   {node = $i.e != null ? new LookupNode($whileStatement.node, $indexes.e) : $whileStatement.node;}
-  |  ^(LOOKUP repeatStatement[true] i=indexes?)   {node = $i.e != null ? new LookupNode($repeatStatement.node, $indexes.e) : $repeatStatement.node;}
+  
+ 
+ // |  ^(LOOKUP forStatement i=indexes?)   {node = $i.e != null ? new LookupNode($forStatement.node, $indexes.e) : $forStatement.node;}
+ // |  ^(LOOKUP whileStatement i=indexes?)   {node = $i.e != null ? new LookupNode($whileStatement.node, $indexes.e) : $whileStatement.node;}
+ // |  ^(LOOKUP repeatStatement[true] i=indexes?)   {node = $i.e != null ? new LookupNode($repeatStatement.node, $indexes.e) : $repeatStatement.node;}
+  ;
+  
+ 
+
+indexes returns [java.util.List<DCNode> e]
+@init {e = new java.util.ArrayList<DCNode>();}
+  :  ^(INDEXES (expression {e.add($expression.node);})+) 
   ;
   
   
 
-indexes returns [java.util.List<DCNode> e]
-@init {e = new java.util.ArrayList<DCNode>();}
-  :  ^(INDEXES (expression {e.add($expression.node);})+)
+ dotProperty returns [java.util.List<PropertyNode> e]
+ @init {e = new java.util.ArrayList<PropertyNode>();}
+  :  ^(DOT (dotExpression {e.add($dotExpression.node);})+)
+  ;	 
+  
+  dotExpression returns [PropertyNode node]
+  : DotX {node = new XPropertyNode();}
+  | DotY {node = new YPropertyNode();}
+  | DotStart {node = new StartPropertyNode();}
+  | DotEnd {node = new EndPropertyNode();}
+  | DotOrigin {node = new OriginPropertyNode();}
+  | DotRotation {node = new RotationPropertyNode();}
+  | DotWidth {node = new WidthPropertyNode();}
+  | DotHeight {node = new HeightPropertyNode();}
+  | DotFill //{node = new FillPropertyNode(ref,$DOT.getLine());}
+  |	DotStroke //{node = new StrokePropertyNode(ref,$DOT.getLine());}
+  | DotWeight //{node = new WeightPropertyNode(ref,$DOT.getLine());}
   ;

@@ -1,0 +1,16 @@
+//Sutcliffe Pentagons
+//http://www.codeproject.com/Articles/214536/Generative-Art-Case-Study-Sutcliffe-Pentagons
+//Also seen in Generative Art: A Practical Guide Using Processing
+
+centerx=300;
+centery=300;
+pentSize=200;
+myPoly=[];
+
+poly(centerx,centery, 5,200);
+repeat i=0:5:
+  add(myPoly,poly(centerx,centery, 5,pentSize*(3/5)^i));
+  //fill(myPoly[i],17*i%255, 49*i%255, 67*i%255);
+  rotate(myPoly[i],36*i);
+end
+

@@ -5,6 +5,7 @@ import processing.core.PConstants;
 
 import com.pixelmaid.dresscode.app.Embedded;
 import com.pixelmaid.dresscode.drawing.datatype.Point;
+import com.pixelmaid.dresscode.drawing.math.Geom;
 
 public class Rectangle extends Polygon{
 	private double width;
@@ -33,11 +34,11 @@ public class Rectangle extends Polygon{
 	}
 	
 	public double getWidth(){
-		return this.height;
+		return this.width;
 	}
 	
 	public double getHeight(){
-		return this.width;
+		return this.height;
 	
 	}
 	
@@ -80,6 +81,13 @@ public class Rectangle extends Polygon{
     	e.height = this.height;
     	return e;
     }
+	
+	@Override
+	//rotates around a focus. does not change the rotation property
+	public Drawable rotateWithFocus(double theta, Point focus){
+		Polygon p = this.toPolygon();
+		return p.rotateWithFocus(theta, focus);	
+	}
 	
 	@Override
 	//converts rectangle to polygon

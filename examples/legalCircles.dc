@@ -1,0 +1,24 @@
+//legal circles
+//http://www.idsia.ch/~juergen/locoart/node8.html
+//http://www.flickr.com/photos/bookwormlaser/7598189170/
+x=300;
+y=300;
+r=100;
+
+//fine
+main=noFill(ellipse(x,y,r));
+weight(main,5);
+
+a=noFill(ellipse(x,y-r/2,r));
+b=noFill(ellipse(x,y+r/2,r));
+
+c=noFill(ellipse(x-r*0.85/2,y-r/4,r));
+d=noFill(ellipse(x+r*0.85/2,y-r/4,r));
+
+e=noFill(ellipse(x-r*0.85/2,y+r/4,r));
+f=noFill(ellipse(x+r*0.85/2,y+r/4,r));
+
+myGroup=group(a,b,c,d,e,f);
+
+//finalShape=main&&myGroup;
+

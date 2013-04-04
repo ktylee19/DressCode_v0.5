@@ -96,6 +96,13 @@ public class Ellipse extends Polygon {
 		e.popMatrix();
 		}
 	}
+	
+	@Override
+	//rotates around a focus. does not change the rotation property
+	public Drawable rotateWithFocus(double theta, Point focus){
+		Polygon p = this.toPolygon();
+		return p.rotateWithFocus(theta, focus);	
+	}	
 
 	@Override
 	//converts ellipse to polygon
@@ -115,6 +122,15 @@ public class Ellipse extends Polygon {
 	
 		
 		return c;
+	}
+	
+	public double getWidth(){
+		return this.width;
+	}
+	
+	public double getHeight(){
+		return this.height;
+	
 	}
 	
 	@Override

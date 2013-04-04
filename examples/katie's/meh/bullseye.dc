@@ -1,0 +1,34 @@
+//Create bullseyes
+a=createBullseye(300,300,YELLOW,RED);
+b=createBullseye(300,300,BLUE,GREEN);
+move(b,100,600);
+
+//Cut out of bullseyes
+top=ellipse(300,250,100);
+bottom=ellipse(300,350,100);
+left=ellipse(250,300,100);
+right=ellipse(350,300,100);
+noFill(top);
+noFill(bottom);
+noFill(left);
+noFill(right);
+
+//Bullseye Function
+def createBullseye(x,y,color1, color2):
+    a=group();
+    repeat i=0:5:
+        add(a,ellipse(x,y,200-30*i));
+        if i%2==1:
+            fill(a[i], color1);
+        else:
+            fill(a[i], color2);
+        end
+    end
+    return a;
+end
+
+
+
+//the clipping currently isn't working due to the color error
+//topCircle = top && a;
+//bottomCircle = bottom && a;

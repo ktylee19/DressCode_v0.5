@@ -22,7 +22,10 @@ tokens {
   INDEXES;
   LIST;
   LOOKUP;
+  DOTLOOKUP;
+  DOTPROPERTY;
   SPECIAL;
+  DOT;
 }
 
 @parser::header {
@@ -103,6 +106,7 @@ functionCall
   	|Curve '(' exprList? ')' ->  ^(FUNC_CALL Curve exprList?)
   	|Polygon '(' exprList? ')' ->  ^(FUNC_CALL Polygon exprList?)
   	|LShape '(' exprList? ')' ->  ^(FUNC_CALL LShape exprList?)
+  	| Point '(' exprList? ')' ->  ^(FUNC_CALL Point exprList?)
   	;
   
   transformCall
@@ -117,6 +121,7 @@ functionCall
    | Hide	'(' expression ')'-> ^(FUNC_CALL Hide expression)
    | Group	'(' exprList? ')'-> ^(FUNC_CALL Group exprList?)
    | Expand	'(' expression ')'-> ^(FUNC_CALL Expand expression)
+   | Merge	'(' expression ')'-> ^(FUNC_CALL Merge expression)
    ;
    
    mathCall
@@ -230,19 +235,59 @@ list
   ;
 
 lookup
-  :  functionCall indexes?       -> ^(LOOKUP functionCall indexes?)
+  :  functionCall (indexes?  -> ^(LOOKUP functionCall indexes?) | dotProperty  -> ^(DOTPROPERTY functionCall dotProperty))      
   |  list indexes?               -> ^(LOOKUP list indexes?)
-  |  Identifier indexes?         -> ^(LOOKUP Identifier indexes?)
+  |  Identifier (indexes?  -> ^(LOOKUP Identifier indexes?) | dotProperty  -> ^(DOTPROPERTY Identifier dotProperty)) 
   |  String indexes?             -> ^(LOOKUP String indexes?)
   |  '(' expression ')' indexes? -> ^(LOOKUP expression indexes?)
-  |	 forStatement indexes?		 -> ^(LOOKUP forStatement indexes?)
-  |  repeatStatement indexes?	 -> ^(LOOKUP repeatStatement indexes?)
-  |  whileStatement indexes?	 -> ^(LOOKUP whileStatement indexes?)
+  //|	 forStatement indexes?		 -> ^(LOOKUP forStatement indexes?)
+  //|  repeatStatement indexes?	 -> ^(LOOKUP repeatStatement indexes?)
+  //|  whileStatement indexes?	 -> ^(LOOKUP whileStatement indexes?)
+  
   ;
-
-indexes
+  
+   indexes
   :  ('[' expression ']')+ -> ^(INDEXES expression+)
   ;
+	  
+  dotProperty
+  :  (dotExpression)+ -> ^(DOT dotExpression+)
+  ;	 
+ 
+  
+  dotExpression
+  : DotX
+  | DotY
+  | DotStart
+  | DotEnd
+  | DotOrigin
+  | DotRotation
+  | DotWidth
+  | DotHeight
+  | DotFill
+  |	DotStroke
+  | DotWeight
+  ;
+
+ 
+
+ 
+	  
+/*  
+property
+  : X
+  | Y
+  | Start
+  | End
+  | Origin
+  | Rotation
+  | Width
+  | Height
+  | Fill
+  |	Stroke
+  | Weight
+  ;
+  */
   
  
  //shape primitives 
@@ -273,6 +318,21 @@ Weight	: 'weight';
 Hide	: 'hide';
 Group	: 'group';
 Expand 	: 'expand';
+Merge	: 'merge';
+ 
+
+//properties
+   DotX	: '.x';
+  DotY		: '.y';
+  DotStart	: '.start';
+  DotEnd	: '.end';
+  DotOrigin	: '.origin';
+  DotRotation	: '.rotation';
+ DotWidth : '.width';
+ DotHeight : '.height';
+ DotStroke	:	'.stroke';
+ DotFill	: '.fill';
+ DotWeight	: '.weight';
 
 
 COLOR_CONSTANT: 'RED'|'BLUE'|'GREEN'|'PURPLE'|'YELLOW'|'ORANGE'|'PINK'|'BLACK'|'WHITE'|'GREY';
@@ -299,7 +359,7 @@ Repeat	 : 'repeat';
 While    : 'while';
 To       : 'to';
 Do       : ':';
-End      : 'end';
+End		:'end';
 In       : 'in';
 Null     : 'null';
 
@@ -329,6 +389,7 @@ Assign   : '=';
 Comma    : ',';
 QMark    : '?';
 //Colon    : ':';
+Dot	: '.';
 
 Bool
   :  'true' 
@@ -336,7 +397,7 @@ Bool
   ;
 
 Number
-  :  Int ('.' Digit*)?
+  :  Int (Dot Digit*)?
   ;
 
 Identifier

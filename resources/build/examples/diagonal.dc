@@ -1,0 +1,182 @@
+/* Lined Spiral */
+
+waveStrength=2;
+
+//border lines
+topline=line(100,170,900,110);
+weight(topline,waveStrength+5);
+botline=line(100,570,900,510);
+weight(botline,waveStrength+5);
+
+//CURVE 0 : bottom
+  //parameters
+  xold=WIDTH/2-320; //previous x value
+  yold=HEIGHT/2+30; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 4; //line amplifier
+  degree = 11; //rotation degree
+  
+  spiral=group();
+  
+  //iteration for spiral
+  repeat i=0:36:
+    //create coordinates parametrically
+    xnew = a * i * cos(i*degree+109) + WIDTH/2-320;
+    ynew = a * i * sin(i*degree+109) + HEIGHT/2+30;
+    weight(line(xold, yold, xnew, ynew),waveStrength);
+    
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end
+
+
+//CURVE 1 : top
+  //parameters
+  xold=WIDTH/2-311; //previous x value
+  yold=HEIGHT/2+14; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 4; //line amplifier
+  degree = 11; //rotation degree
+  
+  spiral=group();
+  
+  //iteration for spiral
+  repeat i=1:39:
+    //create coordinates parametrically
+    xnew = a * i * cos(i*degree-70) + WIDTH/2-311;
+    ynew = a * i * sin(i*degree-70) + HEIGHT/2+14;
+    weight(line(xold, yold, xnew, ynew),waveStrength);
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+
+  end
+
+//CURVE 2 : bottom
+  //parameters
+  xold=WIDTH/2; //previous x value
+  yold=HEIGHT/2; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 4; //line amplifier
+  degree = 11; //rotation degree
+  
+  spiral=group();
+  
+  //iteration for spiral
+  repeat i=1:39:
+    //create coordinates parametrically
+    xnew = a * i * cos(i*degree+109) + WIDTH/2;
+    ynew = a * i * sin(i*degree+109) + HEIGHT/2;
+    weight(line(xold, yold, xnew, ynew),waveStrength);
+    
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end
+
+// CURVE 3 : top
+  //parameters
+  xold=WIDTH/2; //previous x value
+  yold=HEIGHT/2-15; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 4; //line amplifier
+  degree = 11; //rotation degree
+  
+  spiral=group();
+  
+  //iteration for spiral
+  repeat i=1:39:
+    //create coordinates parametrically
+    xnew = a * i * cos(i*degree-70) + WIDTH/2;
+    ynew = a * i * sin(i*degree-70) + HEIGHT/2-15;
+    weight(line(xold, yold, xnew, ynew),waveStrength);
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end
+
+//CURVE 4 : bottom
+  //parameters
+  xold=WIDTH/2+311; //previous x value
+  yold=HEIGHT/2-29; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 4; //line amplifier
+  degree = 11; //rotation degree
+  
+  spiral=group();
+  
+  //iteration for spiral
+  repeat i=1:39:
+    //create coordinates parametrically
+    xnew = a * i * cos(i*degree+109) + WIDTH/2+311;
+    ynew = a * i * sin(i*degree+109) + HEIGHT/2-29;
+    weight(line(xold, yold, xnew, ynew),waveStrength);
+    
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end
+
+// CURVE 5 : top
+  //parameters
+  xold=WIDTH/2+311; //previous x value
+  yold=HEIGHT/2-43; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 4; //line amplifier
+  degree = 11; //rotation degree
+  
+  spiral=group();
+  
+  //iteration for spiral
+  repeat i=1:39:
+    //create coordinates parametrically
+    xnew = a * i * cos(i*degree-70) + WIDTH/2+311;
+    ynew = a * i * sin(i*degree-70) + HEIGHT/2-43;
+    weight(line(xold, yold, xnew, ynew),waveStrength);
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end
+
+//CURVE 6 : bottom
+  //parameters
+  xold=WIDTH/2+622; //previous x value
+  yold=HEIGHT/2-57; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 4; //line amplifier
+  degree = 11; //rotation degree
+  
+  spiral=group();
+  
+  //iteration for spiral
+  repeat i=1:39:
+    //create coordinates parametrically
+    xnew = a * i * cos(i*degree+109) + WIDTH/2+622;
+    ynew = a * i * sin(i*degree+109) + HEIGHT/2-57;
+    weight(line(xold, yold, xnew, ynew),waveStrength);
+    
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end  

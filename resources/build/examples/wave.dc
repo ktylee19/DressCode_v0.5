@@ -1,0 +1,46 @@
+/* Test Double Spiral */
+ //parameters
+  xold=300; //previous x value
+  yold=300; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 4; //line amplifier
+  degree = 10; //rotation degree
+  
+  spiral=group();
+  
+  //iteration for spiral
+  repeat i=1:43:
+    //create coordinates parametrically
+    xnew = a * i * 0.9*cos(i*0.9*degree) + 300;
+    ynew = a * i * sin(i*degree) + 300;
+    line(xold, yold, xnew, ynew);
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end
+  
+ //parameters2
+  xold=300; //previous x value
+  yold=300; //previous y value
+  centerx=xold; //center x
+  centery=yold; //center y
+  a = 6; //line amplifier
+  degree = 11; //rotation degree
+  
+  spiral=group();
+  
+  //iteration for spiral
+  repeat i=1:39:
+    //create coordinates parametrically
+    xnew = 9 * i * cos(i*1.0*degree) + 300;
+    ynew = 7 * i * sin(i*0.93*degree) + 300;
+    line(xold, yold, xnew, ynew);
+    
+    //adjust endpoints for next step
+    xold = xnew;
+    yold=ynew;
+    
+  end

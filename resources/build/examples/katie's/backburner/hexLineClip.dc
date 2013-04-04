@@ -1,0 +1,34 @@
+/*  
+ Create multiple hexes and crop 
+ 
+ Cannot frame with rectangle; can only frame with ellipse...
+ Can't color AND clip
+*/
+
+hexSide=50;
+sqrt2=1.414;
+middleLength=hexSide/2*sqrt2;
+
+xCoord=0;
+yCoord=100;
+
+//ultimate hex group
+hexGroup=group();
+
+//create hex line sideways
+hexLine=group();
+repeat i=0:10:
+    add(hexLine,poly(xCoord+(hexSide*2*i),yCoord,6,hexSide));
+end
+add(hexGroup,hexLine);
+
+//create 4 more rows:
+nextLine=[];
+repeat i=0:4:
+    add(hexGroup,move(copy(hexLine),xCoord+(hexSide*i), yCoord+hexSide*2*i-15*i));
+end
+
+myFrame = noFill(poly(300,300,6,200));
+
+myPicture = myFrame && hexGroup;
+fill(myPicture,PURPLE);

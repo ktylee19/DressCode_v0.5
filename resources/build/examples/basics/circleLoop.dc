@@ -1,0 +1,15 @@
+//create shape to rotate
+a=poly(300,300,30,130);
+noFill(a);
+weight(a,4);
+//la=point(400,400);
+//rotate(a,45,la);
+
+myShift=40;
+inc=20;
+
+repeat i=1:10:
+    x=copy(a);
+    move(x,100,50+myShift);
+    myShift=myShift+inc;
+end

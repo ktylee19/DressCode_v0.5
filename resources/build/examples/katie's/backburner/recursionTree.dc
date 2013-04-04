@@ -1,0 +1,62 @@
+// Need to import the x,y values.
+
+
+// Start Parameters
+x1=300;
+y1=500;
+length=400;
+angle=0;
+counter=0;
+
+// Fractal Tree Main
+tree=group();
+base=line(x1,y1,x1,y1-length);
+weight(base,2);
+
+repeat i=1:4:
+    newLChild = drawChild(x1,y1-length/2, length, angle);
+    /*
+    //Create children of children
+    repeat j=1:4:
+        drawChild(newLChild.origin.x, newLChild.origin.y, length/2, angle-45)
+        drawChild(newLChild.origin.x, newLChild.origin.y, length/2, angle+45)
+        
+    end
+    */
+    y1=y1-length/2;
+    length=length/2;
+end
+
+/*
+while (counter<4) :
+    base=drawMidpoint(x1,y1,x2,y2,counter);
+end    
+*/
+//weight(tree,2);
+
+
+
+// Recursive function to draw children
+//
+//   PARAM: 
+//     xm: x coordinates of parent midpoint
+//     ym: y coordinate of parent midpoint
+//     len: length of parent line
+//     angle: angle of parent line
+//
+//   RETURN: 
+//     midpoint of leftchild, rightchild
+def drawChild(xm,ym,len,angle):    
+    //create two lines based on midpoint
+    leftChild = line(xm, ym, xm, ym-len/2);
+    rightChild = line(xm, ym, xm, ym-len/2);
+    weight(leftChild,2);
+    weight(rightChild,2);
+    
+    //rotate lines 45 degrees outward
+    rotate(leftChild,angle-45);
+    rotate(rightChild,45);
+    
+    //align first point of line with the midpoint of the parent
+    return [leftChild,rightChild];
+end

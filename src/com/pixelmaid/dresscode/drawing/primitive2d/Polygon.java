@@ -76,6 +76,32 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 		return this.holes;
 	}
 	
+	/*public Point rotatePoint(Point pt, Point center, double angle)
+	{
+	    double theta =  ((angle/180)*Math.PI);
+	    double cosAngle = Math.cos(theta);
+	    double sinAngle = Math.sin(theta);
+	    
+	    double x = center.getX() + (int) ((pt.getX()-center.getX())*cosAngle-(pt.getY()-center.getY())*sinAngle);
+	    double y = center.getY() + (int) ((pt.getX()-center.getX())*sinAngle+(pt.getY()-center.getY())*cosAngle);
+	    Point nP = new Point(x,y);
+	    return nP;
+	}*/
+	
+	@Override
+	//rotates around a focus. does not change the rotation property
+	public Drawable rotateWithFocus(double theta, Point focus){
+		this.setPointsAbsolute();
+		for(int i=0;i<this.points.size();i++){
+			Point newPoint = this.points.get(i).rotate(theta, focus);
+			this.points.set(i,newPoint);
+		}
+		this.setOrigin(Geom.findCentroid(this));
+		this.setPointsRelativeTo(this.getOrigin());
+		return this;
+		
+	}
+	
 	
 	//===================OVERRIDDEN METHODS==================
 	
@@ -286,8 +312,20 @@ public Drawable expand(){
 		this.setPointsRelativeTo(this.origin);
 		return p;
 	}
-
 	
+	@Override
+	   //gets all points of all children
+	   public ArrayList<Point> copyAllPoints(){
+		   ArrayList<Point> copyPoints = new ArrayList<Point>();
+		  
+		
+				for(int i=0;i<this.getPoints().size();i++){
+				   copyPoints.add(this.getPoints().get(i).copy());  
+			   }
+		  
+			   
+			   return copyPoints;
+		}
 	
 	
 	//=============================TURTLE METHODS==================================//
