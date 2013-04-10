@@ -9,20 +9,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
+import javax.swing.text.BadLocationException;
 
 import org.antlr.gunit.gUnitParser.file_return;
 
 import com.pixelmaid.dresscode.app.CodeField;
 import com.pixelmaid.dresscode.app.CodingFrame;
 import com.pixelmaid.dresscode.app.Embedded;
+import com.pixelmaid.dresscode.drawing.datatype.Point;
 
 public class DCProject {
-	private int width, height; // default width and height of project
+	private double width, height, unitWidth, unitHeight; // default width and height of project
 	private static int METRIC = 0;
 	private static int STANDARD = 1;
 	private int units; //units
 	private static double PIX_IN_MM = 0.35278; //conversion from pixels to mm
 	private static double PIX_IN_INCH = 0.013888; //conversion from pixels to inches
+	public int DEFAULT_WIDTH = 500;
+	public int DEFAULT_HEIGHT = 500;
 	private String code = "";
 	private String path;
 	private String name = "untitled";
@@ -34,52 +38,77 @@ public class DCProject {
 	private int template = 0;
 	protected boolean hasHiddenCode= false;
 
-	public DCProject(int w, int h){
+	public DCProject(){
 		fc = new JFileChooser();
-		this.width=w;
-		this.height=h;
+		this.width=DEFAULT_WIDTH;
+		this.height=DEFAULT_HEIGHT;
+		this.unitHeight= 6.94;
+		this.unitWidth = 6.94;
 		this.units = STANDARD;
-		
+
 	}
-	public void setDimensions(int w, int h, int u,Embedded canvas, InstructionManager im){
-		this.width=w;
-		this.height=h;
+	public void setDimensions(double w, double h, int u,Embedded canvas, InstructionManager im){
 		this.units = u;
-		canvas.setDrawingBoardDimensions(width, height);
+		convertDimensions(w,h);
+		this.unitWidth = w;
+		this.unitHeight = h;
+		canvas.setDrawingBoardDimensions(width, height,getUnits());
 		im.setDimensionParams(width, height);
 	}
-	
-	
+
+
 	public boolean hiddenCode(){
 		return hasHiddenCode;
 	}
-	
-	public int getWidth(){
+
+	public double getWidth(){
 		return this.width;
 	}
-	
-	public int getHeight(){
+
+	public double getHeight(){
 		return this.height;
 	}
+	public double getUnitHeight(){
+
+		return this.unitHeight;
+	}
+
+
+	public double getUnitWidth(){
+
+		return this.unitWidth;
+	}
+
 	public void setCode(String c){
 		this.code = c;
 	}
 	public String getCode(){
 		return this.code;
 	}
-	
+
 	public void run(String code, InstructionManager instructionManager){
 		setCode(code);
 
 		instructionManager.parseText(getCode());
 	}
-	
+
 	public void run(String code, String hc, InstructionManager instructionManager){
 		setCode(hc+"\n"+code);
 		instructionManager.parseText(getCode());
 	}
-	
-	
+
+
+	public void newFile(CodingFrame cf, CodeField codeField, Embedded canvas, DrawableManager dm, InstructionManager im){
+		
+		cf.hideHiddenTab();
+		codeField.clear();
+		dm.clearAllDrawables();
+		canvas.clear();
+		saved= false;
+		setDimensions(this.getUnitWidth(),this.getUnitHeight(), units, canvas, im);
+	}
+
+
 	public void openFile(Component component, CodingFrame cf, Embedded canvas, InstructionManager im){
 		int returnVal = fc.showOpenDialog(component);
 
@@ -96,38 +125,45 @@ public class DCProject {
 			this.name= this.name.substring(0,name.length()-extension.length());
 
 			double [] vars = convertParams(paramFile);
-
-			width = ((Double)(vars[0])).intValue();
-			height = ((Double)(vars[1])).intValue();
 			units = ((Double)(vars[2])).intValue();
+
+			double w = ((Double)(vars[0]));
+			double h = ((Double)(vars[1]));
+			
+
+			setDimensions(w, h, units,canvas,  im);
+
 			template =((Double)(vars[3])).intValue();
 			cf.setCode(name,getCode());
-			canvas.setDrawingBoardDimensions(width, height);
+			canvas.setDrawingBoardDimensions(width, height,getUnits());
 			im.setDimensionParams(width, height);
-			
+
 			if(vars[4]==1){
 				hasHiddenCode=true;
-				
+
 				String hiddenCodePath = path+"/"+data+"/"+name+"_hidden.dc";
 				String hiddenFiletxt= readFile(new File(hiddenCodePath));
 				setCode(hiddenFiletxt+"\n"+filetxt);
 				cf.showHiddenTab(name+"_hidden", hiddenFiletxt);
-				
+
 			}
 			else{
 				hasHiddenCode=false;
 			}
+			this.saved=false;
 		} 
 
 	}
-	
+
 	public void saveFile(Component component,String code,CodingFrame cf){
 		setCode(code);
 		if(!saved){
+			File blank = new File(this.name);
+			fc.setSelectedFile(blank);
 			int returnVal = fc.showSaveDialog(component);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fc.getSelectedFile();
-				
+
 				this.name =file.getName();
 				this.path= file.getAbsolutePath();
 				this.path = this.path.substring(0,path.length()-name.length());
@@ -136,32 +172,34 @@ public class DCProject {
 				File dataDir = new File(path+name+"/"+"data");
 				System.out.println(dataDir.mkdirs());
 				File fileNew = new File(path+name+"/"+name+extension);
-				
+
 				System.out.println(path+name+"/"+name+extension);
 				writeFile(getCode(),fileNew);
-				
+
 				File paramFile = new File(path+name+"/"+data+"/"+params);
 				double [] vars = new double[10];
-				
-				vars[0]= width;
-				vars[1]= height; // default width and height of project
+
+				vars[0]= getUnitWidth();
+				vars[1]= getUnitHeight(); // default width and height of project
 				vars[2]=  units; //units
 				vars[3] = template;
 				if(hasHiddenCode){
 					vars[4]=1;
 					cf.setTabTitle(1,name+"_hidden");
+					File hiddenFile = new File(path+name+"/"+data+"/"+name+"_hidden"+extension);
+					writeFile(cf.hiddenCodeField.getCode(),hiddenFile);
 				}
 				else{
 					vars[4]=0;
-					
+
 				}
-				
+
 				writeFile(vars,paramFile);
 				this.saved=true;
 				cf.setTabTitle(0, name);
-				
+
 			} 
-		
+
 		}
 		else{
 			File f = new File(path+name+extension);
@@ -169,18 +207,32 @@ public class DCProject {
 			writeFile(getCode(),f);
 		}
 	}
-		
-	
-	
+
+
+
 	public void printFile(Component component, Embedded canvas){
-		
+		File blank = new File(this.name);
+		fc.setSelectedFile(blank);
 		int returnVal = fc.showDialog(component, "Export");
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
 			canvas.print(file);
 		}
 	}
-	
+
+
+	public void convertDimensions(double w,double h){
+		if(units==METRIC){
+			this.width = w/PIX_IN_MM;
+			this.height = h/PIX_IN_MM;
+		}
+		else if(units==STANDARD){
+			this.width = w/PIX_IN_INCH;
+			this.height = h/PIX_IN_INCH;
+		}
+	}
+
+
 	public String readFile(File file) {
 
 		BufferedReader br = null;
@@ -208,14 +260,14 @@ public class DCProject {
 		return fileString;
 
 	}
-	
+
 	public double[] convertParams(String filePath){
 		double[] vars = new double[100];
 		try{
-		BufferedReader in = new BufferedReader(new FileReader(filePath));
-		String line;
-		int count = 0;
-		
+			BufferedReader in = new BufferedReader(new FileReader(filePath));
+			String line;
+			int count = 0;
+
 			while((line = in.readLine()) != null)
 			{
 				//System.out.println(line);
@@ -223,26 +275,26 @@ public class DCProject {
 				//System.out.println(vars[count]);
 				count ++;
 			}
-		
-		
+
+
 		}
 		catch(IOException e){
 			System.out.println("could not read file");
 		}
-		
+
 		return vars;
 	}
 
 	public void writeFile(double[] vars, File file){
-		
+
 		String varString = "";
-			for(int i=0;i<vars.length;i++){
-				varString = varString+Double.toString(vars[i])+"\n";
-			}
-			System.out.println(varString);
-			writeFile(varString, file);
-			
-		
+		for(int i=0;i<vars.length;i++){
+			varString = varString+Double.toString(vars[i])+"\n";
+		}
+		System.out.println(varString);
+		writeFile(varString, file);
+
+
 	}
 
 
@@ -266,7 +318,29 @@ public class DCProject {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+	public int getUnits() {
+		return this.units;
+	}
+	public void setSaved(boolean b) {
+		saved = b;
+		
+	}
+	public void importFile(Component component, CodeField codeField) {
+		int returnVal = fc.showDialog(component, "Select");
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			try {
+				codeField.insertPath(file);
+			} catch (BadLocationException e1) {
+				
+				e1.printStackTrace();
+			}
+		}
+
+		
+	}
+
+
+
+
 }

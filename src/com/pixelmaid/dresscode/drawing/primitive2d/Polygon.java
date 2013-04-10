@@ -136,6 +136,7 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 	public void print(Embedded e){
 		if(!this.getHide()){
 		appearance(e);
+		e.noFill();
 		//System.out.println("number of holes="+this.holes.size()+"number of points="+this.points.size());
 		e.pushMatrix();
 		e.translate((float)(getOrigin().getX()),(float)(getOrigin().getY()));
@@ -257,9 +258,9 @@ public Drawable expand(){
 		for(int i=0;i<holes.size();i++){
 			ArrayList<Point> holepoints = holes.get(i).getPoints();
 			for(int j=0;j<holepoints.size();j++){
-			    Point pt = new Point(holepoints.get(j).getX()+getOrigin().getX(),holepoints.get(j).getY()+getOrigin().getY());
-				pt.rotate(getRotation(),getOrigin());
-				holepoints.set(j,pt);
+			    Point pt2 = new Point(holepoints.get(j).getX()+getOrigin().getX(),holepoints.get(j).getY()+getOrigin().getY());
+				pt2.rotate(getRotation(),getOrigin());
+				holepoints.set(j,pt2);
 				
 			}
 			holes.get(i).setPoints(holepoints);

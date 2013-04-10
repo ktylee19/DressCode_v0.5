@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // $ANTLR 3.5 /Users/Katie/Documents/Java/workspace/DressCode_v0.5/src/com/pixelmaid/dresscode/antlr/Pogo.g 2013-04-10 15:22:07
+=======
+// $ANTLR 3.5 /Users/jenniferjacobs/Documents/MIT/HighLow_Tech/thesis/code/workspace/DressCode_v0.5/src/com/pixelmaid/dresscode/antlr/Pogo.g 2013-04-08 20:35:05
+>>>>>>> upstream/master
 
   package com.pixelmaid.dresscode.antlr;
   import com.pixelmaid.dresscode.antlr.types.*; 
@@ -3109,7 +3113,7 @@ public class PogoParser extends Parser {
 					stream_CParen.add(char_literal134);
 
 					// AST REWRITE
-					// elements: expression, Cosine
+					// elements: Cosine, expression
 					// token labels: 
 					// rule labels: retval
 					// token list labels: 
@@ -3293,7 +3297,7 @@ public class PogoParser extends Parser {
 			stream_End.add(End142);
 
 			// AST REWRITE
-			// elements: elseIfStat, elseStat, ifStat
+			// elements: ifStat, elseIfStat, elseStat
 			// token labels: 
 			// rule labels: retval
 			// token list labels: 
@@ -3500,7 +3504,7 @@ public class PogoParser extends Parser {
 
 			stream_block.add(block151.getTree());
 			// AST REWRITE
-			// elements: block, expression
+			// elements: expression, block
 			// token labels: 
 			// rule labels: retval
 			// token list labels: 
@@ -3822,7 +3826,11 @@ public class PogoParser extends Parser {
 			stream_End.add(End171);
 
 			// AST REWRITE
+<<<<<<< HEAD
 			// elements: expression, expression, Identifier, For, block
+=======
+			// elements: expression, expression, For, block, Identifier
+>>>>>>> upstream/master
 			// token labels: 
 			// rule labels: retval
 			// token list labels: 
