@@ -32,7 +32,7 @@ public class Drawable implements DrawableEvent {
 	private boolean doFill = true;
 	private boolean doStroke=true;
 	private boolean drawOrigin=true;
-	private ArrayList<Hole> holes = new ArrayList<Hole>();
+	protected ArrayList<Hole> holes = new ArrayList<Hole>();
 
 	protected final static int DEFAULT_WIDTH= 50;
 
@@ -372,6 +372,14 @@ public class Drawable implements DrawableEvent {
 		}
 	}
 	
+	//resets origin to new point resulting in the moving of the object
+	public void moveBy(double x, double y) {
+		this.origin.moveBy(x, y);
+		if(this.getParent()!=null){
+			this.parent.resetOrigin();
+		}
+	}
+	
 	//sets the rotation to a new angle (in degrees)
 	public void rotate(double theta) {
 		this.rotation=theta;
@@ -391,7 +399,7 @@ public class Drawable implements DrawableEvent {
 				this.children.get(i).rotateWithFocus(theta, focus);
 				origins.add(this.children.get(i).getOrigin());
 			}
-			for(int i=0;i<this.children.size();i++){
+			for(int i=0;i<this.holes.size();i++){
 				this.holes.get(i).rotateWithFocus(theta, focus);
 			}
 			
@@ -409,6 +417,56 @@ public class Drawable implements DrawableEvent {
 			}
 			return this;
 			
+		}
+		
+		public Drawable mirrorX() {
+			this.setAbsolute();
+			ArrayList<Point> origins = new ArrayList<Point>();
+			
+			for(int i=0;i<this.children.size();i++){
+				this.children.get(i).mirrorX();
+				origins.add(this.children.get(i).getOrigin());
+			}
+			
+			/*for(int i=0;i<this.holes.size();i++){
+				this.holes.get(i).mirrorX();
+			}*/
+			
+			if(this.children.size()>1){
+				this.moveOrigin(Geom.getAveragePoint(origins)); //set origin to average of group origins and re-orient group origins
+			}
+			
+			else if(this.children.size()==1){ //if only one child, return the child and remove empty group from canvas
+				this.moveOrigin(this.children.get(0).getOrigin()); //set origin to average of group origins and re-orient group origins
+			}
+			
+			if(this.getParent()!=null){
+				this.parent.resetOrigin();
+			}
+			return this;
+		}
+		
+		public Drawable mirrorY() {
+			this.setAbsolute();
+			ArrayList<Point> origins = new ArrayList<Point>();
+			
+			for(int i=0;i<this.children.size();i++){
+				this.children.get(i).mirrorY();
+				origins.add(this.children.get(i).getOrigin());
+			}
+			
+			if(this.children.size()>1){
+				this.moveOrigin(Geom.getAveragePoint(origins)); //set origin to average of group origins and re-orient group origins
+			}
+			
+			else if(this.children.size()==1){ //if only one child, return the child and remove empty group from canvas
+				this.moveOrigin(this.children.get(0).getOrigin()); //set origin to average of group origins and re-orient group origins
+			}
+			
+			if(this.getParent()!=null){
+				this.parent.resetOrigin();
+			}
+			return this;
 		}
 	
 	//returns the rotation of an object
@@ -896,6 +954,8 @@ public class Drawable implements DrawableEvent {
 		public void removeEventListener(CustomEventListener listener) {
 			this.es.removeEventListener(listener);
 		}
+
+		
 
 	//boolean returns to check type of drawables
 	/*public boolean isDrawable(){

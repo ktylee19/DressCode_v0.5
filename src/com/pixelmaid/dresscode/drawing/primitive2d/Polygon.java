@@ -12,7 +12,7 @@ import com.pixelmaid.dresscode.drawing.math.PolyBoolean;
 import com.pixelmaid.dresscode.events.CustomEvent;
 
 public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
-	private ArrayList<Point> points;
+	protected ArrayList<Point> points;
 	//private ArrayList<Hole> holes;
 	private static double DEFAULT_LENGTH = 20;
 	
@@ -36,12 +36,24 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 	
 	public Polygon(double x, double y,int sides, double length){
 		this(new Point(x,y));
-		double angle = 360/(double)sides;
+		if(sides!=0){
+		double a = length/(2*Math.sin(Math.toRadians(180/sides)));
+		for(int i=0;i<sides;i++){
+			double theta = 360/sides*i;
+			Point p = new Point(0,0,Math.toRadians(theta)+Math.PI/2 - Math.PI/sides,a);
+			this.addPoint(p);
+		}
+		this.setOrigin(Geom.findCentroid(this));
+		//this.setPointsAbsolute();
+		//this.setPointsRelativeTo(new Point(0,0));
+		}
+		
+		/*double angle = 360/(double)sides;
 		resetTurtle();
 		for(int i=0;i<sides;i++){
 			  this.forward(length);
 			  this.right(angle);
-			}
+			}*/
 		
 	}
 	
@@ -97,6 +109,9 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 			Point newPoint = this.points.get(i).rotate(theta, focus);
 			this.points.set(i,newPoint);
 		}
+		for(int i=0;i<getHoles().size();i++){
+			getHoles().get(i).rotateWithFocus(theta, focus);
+		}
 		this.setOrigin(Geom.findCentroid(this));
 		this.setPointsRelativeTo(this.getOrigin());
 		return this;
@@ -136,7 +151,7 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 	public void print(Embedded e){
 		if(!this.getHide()){
 		appearance(e);
-		e.noFill();
+		//e.noFill();
 		//System.out.println("number of holes="+this.holes.size()+"number of points="+this.points.size());
 		e.pushMatrix();
 		e.translate((float)(getOrigin().getX()),(float)(getOrigin().getY()));
@@ -155,6 +170,42 @@ public class Polygon extends Drawable implements PrimitiveInterface, Turtle{
 		e.popMatrix();
 		}
 	
+	}
+	@Override
+	public Drawable mirrorX(){
+	this.setPointsAbsolute();
+		for(int i=0;i<points.size();i++){
+			Point p = points.get(i);
+			double delta = getOrigin().getX()-p.getX();
+			double xNew = origin.getX()+delta;
+			points.set(i, new Point(xNew,p.getY()));
+		}
+		for(int i=0;i<getHoles().size();i++){
+			System.out.println("mirroring hole "+i);
+			Hole newHole = this.getHoles().get(i).mirrorX(this.getOrigin());
+			holes.set(i,newHole);
+		}
+		
+		this.setPointsRelativeTo(this.origin);
+		
+		return this;
+	}
+	@Override
+	public Drawable mirrorY(){
+		this.setPointsAbsolute();
+		for(int i=0;i<points.size();i++){
+			Point p = points.get(i);
+			double delta = getOrigin().getY()-p.getY();
+			double yNew = origin.getX()+delta;
+			points.set(i, new Point(p.getX(),yNew));
+		}
+		for(int i=0;i<getHoles().size();i++){
+			getHoles().get(i).mirrorY();
+		}
+		
+		this.setPointsRelativeTo(this.origin);
+		
+		return this;
 	}
 	
 	@Override
@@ -434,11 +485,10 @@ public Drawable expand(){
 
 			
 			
-
+		
 
 
 }
-
 
 
 

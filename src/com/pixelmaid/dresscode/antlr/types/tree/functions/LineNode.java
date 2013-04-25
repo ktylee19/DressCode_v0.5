@@ -1,14 +1,15 @@
 package com.pixelmaid.dresscode.antlr.types.tree.functions;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import com.pixelmaid.dresscode.antlr.types.VarType;
 import com.pixelmaid.dresscode.antlr.types.tree.DCNode;
+
 import com.pixelmaid.dresscode.drawing.datatype.Point;
-import com.pixelmaid.dresscode.drawing.primitive2d.Drawable;
 import com.pixelmaid.dresscode.drawing.primitive2d.Line;
 import com.pixelmaid.dresscode.events.CustomEvent;
+import com.pixelmaid.dresscode.drawing.primitive2d.DrawablePoint;
 
 
 public class LineNode extends DrawableNode implements DCNode {
@@ -19,10 +20,49 @@ public class LineNode extends DrawableNode implements DCNode {
     }
 
     @Override
+    
     public VarType evaluate() {
     	Line e = null;
+    	if(params.size()==4 && params.get(0).evaluate().isNumber()&&params.get(1).evaluate().isNumber()&&params.get(2).evaluate().isNumber()&&params.get(3).evaluate().isNumber() ){
+    		double x1 = params.get(0).evaluate().asDouble();
+    		double y1 = params.get(1).evaluate().asDouble();
+    		double x2 = params.get(2).evaluate().asDouble();
+    		double y2 = params.get(3).evaluate().asDouble();
+
+    		e = new Line(x1,y1,x2,y2);
+    		this.drawableEvent(CustomEvent.DRAWABLE_CREATED, e);
+    		return new VarType(e);	
+    	}
+    	else if(params.size()==2 && params.get(0).evaluate().isDrawablePoint()&&params.get(1).evaluate().isDrawablePoint()){
+    		Point start = params.get(0).evaluate().asDrawablePoint().getOrigin();
+    		Point end = params.get(1).evaluate().asDrawablePoint().getOrigin();
+    		e = new Line(start.getX(),start.getY(),end.getX(),end.getY());
+    		this.drawableEvent(CustomEvent.DRAWABLE_CREATED, e);
+    		return new VarType(e);	
+    		
+    		
+    	}
+    	
+    	else if(params.size()==3 && params.get(0).evaluate().isDrawablePoint()&&params.get(1).evaluate().isNumber()&&params.get(2).evaluate().isNumber()){
+    		Point start = params.get(0).evaluate().asDrawablePoint().getOrigin();
+    		double r = params.get(1).evaluate().asDouble();
+    		double theta = params.get(2).evaluate().asDouble();
+    		e = new Line(start,r,theta);
+    		this.drawableEvent(CustomEvent.DRAWABLE_CREATED, e);
+    		return new VarType(e);	
+    	}
+    	
+    	
+    	throw new RuntimeException("Illegal line function call: " + this);
+    	
+    }
+    	
+    	
+    	/* public VarType evaluate() {
+    	Line e = null;
     	if(params.get(0).evaluate().isNumber()){
-    	try{
+    	System.out.println("first line param is number");
+    		try{
     		ArrayList<Double> values = new ArrayList<Double>();
     	
     	for(int i=0;i<params.size();i++){
@@ -84,7 +124,7 @@ public class LineNode extends DrawableNode implements DCNode {
     	this.drawableEvent(CustomEvent.DRAWABLE_CREATED, e);
 	    	return new VarType(e);	
         //throw new RuntimeException("Illegal function call: " + this);
-    }
+    }*/
 
    
 }

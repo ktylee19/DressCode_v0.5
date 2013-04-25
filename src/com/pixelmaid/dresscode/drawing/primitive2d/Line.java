@@ -15,8 +15,8 @@ public class Line extends Polygon {
 	private Point end;
 	
 	//initialize line from 4 x/y coordinates values
-		public Line(ArrayList<Double> values) {
-			this(values.get(0),values.get(1),values.get(2),values.get(3));
+		public Line(double[] values) {
+			this(values[0],values[1],values[2],values[3]);
 		}
 	//initialize line from 4 x/y coordinates values
 	public Line(double startX, double startY, double endX, double endY) {
@@ -98,6 +98,14 @@ public class Line extends Polygon {
 		double dy = y-this.origin.getY();
 		this.start.moveBy(dx,dy);
 		this.end.moveBy(dx,dy);
+		this.origin= Geom.getMidpoint(start, end);
+	}
+	
+	@Override
+	public void moveBy(double x, double y){
+		
+		this.start.moveBy(x,y);
+		this.end.moveBy(x,y);
 		this.origin= Geom.getMidpoint(start, end);
 	}
 	
