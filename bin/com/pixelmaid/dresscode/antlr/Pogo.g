@@ -103,6 +103,7 @@ functionCall
   |	 primitiveCall
   |	 transformCall
   |	 mathCall
+  | getCall
   ;
   
   
@@ -112,12 +113,16 @@ functionCall
   	|Rect '(' exprList? ')'   -> ^(FUNC_CALL Rect exprList?) 
   	|Curve '(' exprList? ')' ->  ^(FUNC_CALL Curve exprList?)
   	|Polygon '(' exprList? ')' ->  ^(FUNC_CALL Polygon exprList?)
-  	|LShape '(' exprList? ')' ->  ^(FUNC_CALL LShape exprList?)
-  	| Point '(' exprList? ')' ->  ^(FUNC_CALL Point exprList?)
+  	|Skirt '(' exprList? ')' ->  ^(FUNC_CALL Skirt exprList?)
+  	|SkirtBack '(' exprList? ')' ->  ^(FUNC_CALL SkirtBack exprList?)
+    |LShape '(' exprList? ')' ->  ^(FUNC_CALL LShape exprList?)
+    | Point '(' exprList? ')' ->  ^(FUNC_CALL Point exprList?)
   	;
   
   transformCall
-   : Move '(' exprList? ')' -> ^(FUNC_CALL Move exprList?) 
+   : Move '(' exprList? ')' -> ^(FUNC_CALL Move exprList?)
+   | MoveBy '(' exprList? ')' -> ^(FUNC_CALL MoveBy exprList?) 
+    
    | Copy '(' expression ')' -> ^(FUNC_CALL Copy expression)
    | Rotate '(' exprList? ')'-> ^(FUNC_CALL Rotate exprList?)
    | Fill '(' exprList? ')'-> ^(FUNC_CALL Fill exprList?)
@@ -130,12 +135,32 @@ functionCall
    | Expand	'(' expression ')'-> ^(FUNC_CALL Expand expression)
    | Merge	'(' expression ')'-> ^(FUNC_CALL Merge expression)
    | Scale '(' exprList? ')'-> ^(FUNC_CALL Scale exprList?)
-   //| Get	'('expression ')'->^(FUNC_CALL Get expression)
+   | MirrorX	'(' expression ')'-> ^(FUNC_CALL MirrorX expression)
+  
    ;
+   
+   getCall
+  : GetWidth '(' expression ')'-> ^(FUNC_CALL GetWidth expression)
+  |GetHeight '(' expression ')'-> ^(FUNC_CALL GetHeight expression)
+  |GetX	'(' expression ')'-> ^(FUNC_CALL GetX expression)
+  |GetY '(' expression ')'-> ^(FUNC_CALL GetY expression)
+  |GetOrigin '(' expression ')'-> ^(FUNC_CALL GetOrigin expression)
+  |GetRotation '(' expression ')'-> ^(FUNC_CALL GetRotation expression)
+  |GetFill '(' expression ')'-> ^(FUNC_CALL GetFill expression)
+  |GetStroke '(' expression ')'-> ^(FUNC_CALL GetStroke expression)
+  |GetStart '(' expression ')'-> ^(FUNC_CALL GetStart expression)
+  |GetEnd '(' expression ')'-> ^(FUNC_CALL GetEnd expression) 
+   |GetDistance '(' exprList?  ')'-> ^(FUNC_CALL GetDistance exprList? ) 
+  ;
    
    mathCall
    	:Cosine '(' expression ')'   -> ^(FUNC_CALL Cosine expression)
    	|Sine '(' expression ')'   -> ^(FUNC_CALL Sine expression)
+   	|Tan '(' expression ')'   -> ^(FUNC_CALL Tan expression)
+   	|ATan '(' expression ')'   -> ^(FUNC_CALL ATan expression)
+   	|Random '(' exprList? ')'   -> ^(FUNC_CALL Random exprList?)
+   	|Round'(' expression ')'   -> ^(FUNC_CALL Round expression)
+   	|Map'(' exprList? ')'   -> ^(FUNC_CALL Map exprList?)
    	;
   
   
@@ -308,14 +333,23 @@ Quad	: 'quad';
 Point	: 'point';
 Triangle: 'triangle';
 Polygon	: 'poly';
+Skirt : 'skirt'; 
+SkirtBack : 'skirtback';
 LShape	: 'import';
 
 //math keywords
 Cosine	:'cos';
 Sine	: 'sin';
+Tan		: 'tan';
+ATan	: 'atan';
+Random 	: 'random';
+Round	: 'round';
+Map		: 'map';
+
 
 //transforms
 Move	: 'move';
+MoveBy	: 'moveBy';
 Copy	: 'copy';
 Rotate	: 'rotate';
 Scale	: 'scale';
@@ -328,7 +362,25 @@ Hide	: 'hide';
 Group	: 'group';
 Expand 	: 'expand';
 Merge	: 'merge';
+MirrorX	: 'mirrorX';
+MirrorY: 'mirrorY';
  
+//getMethods
+GetWidth: 'getWidth';
+GetHeight: 'getHeight';
+GetX: 'getX';
+GetY: 'getY';
+GetOrigin: 'getOrigin';
+GetRotation: 'getRotation';
+GetFill: 'getFill';
+GetStroke: 'getStroke';
+GetStart: 'getStart';
+GetEnd: 'getEnd';
+GetDistance: 'dist';
+
+
+
+
 
 //properties
    DotX	: '.x';
