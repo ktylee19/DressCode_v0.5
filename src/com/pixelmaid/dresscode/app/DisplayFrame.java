@@ -635,9 +635,23 @@ public class DisplayFrame extends javax.swing.JFrame implements CustomEventListe
     public void handleCustomDrawableEvent(Object source, int eventType, Drawable d) {
         switch (eventType){
         case CustomEvent.SHAPE_LOAD_REQUESTED:	
+            System.out.println("request shape load sent");
             ((LShape)d).setCanvas(this.canvas);
             ((LShape)d).loadShape();
             break;
+        
+        case CustomEvent.RESIZE_BOARD:
+            //TODO find a way to find the size of the skirt. 
+            //     once skirt is polygon-able, get size. 
+            double widthVal = 12.0;
+            double heightVal = 26.0;
+            int unitsVal=1; 
+            System.out.println("width ="+widthVal+" height="+ heightVal+" units="+ unitsVal);
+            //set dimensions to what we want. 
+            currentProject.setDimensions(widthVal,heightVal, unitsVal, canvas, instructionManager);
+            
+            //TODO move to coordinates that we desire:
+            //     do by zooming and panning? there's gotta be a better way...
         }
 
     }
@@ -694,11 +708,5 @@ public class DisplayFrame extends javax.swing.JFrame implements CustomEventListe
         this.output.setText(this.output.getText()+value);
 
     }
-
-
-
-
-
-
 
 }

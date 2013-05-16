@@ -36,7 +36,6 @@ public class EventSource {
     public void fireDrawableEvent(Object source, int event, Drawable d) {
         Iterator i = _listeners.iterator();
         while(i.hasNext())  {
-
             ((CustomEventListener) i.next()).handleCustomDrawableEvent(source, event, d);
         }
 
@@ -45,7 +44,6 @@ public class EventSource {
     public void fireDrawableEvent(Object source, int event, Drawable d1,Drawable d2) {
         Iterator i = _listeners.iterator();
         while(i.hasNext())  {
-
             ((CustomEventListener) i.next()).handleCustomDrawableEvent(source, event, d1,d2);
         }
 
@@ -54,7 +52,6 @@ public class EventSource {
     public void fireRuntimeErrorEvent(Object source, int event, String message) {
         Iterator i = _listeners.iterator();
         while(i.hasNext())  {
-
             ((CustomEventListener) i.next()).handleCustomRuntimeErrorEventDrawableEvent(source, event, message);
         }
 
@@ -63,19 +60,8 @@ public class EventSource {
     public void firePrintEvent(Object source, int event, String value) {
         Iterator i = _listeners.iterator();
         while(i.hasNext())  {
-
             ((CustomEventListener) i.next()).handleCustomPrintEvent(source, event, value);
         }
 
-    }
-
-    public void fireResizeEvent(Object source, int event/* custom things, such as: String value*/) {
-        /*TODO event
-        
-        Iterator i = _listeners.iterator();
-        while(i.hasNext())  {
-            ((CustomEventListener) i.next()).handleCustomPrintEvent(source, event, value);
-        }
-        */
     }
 }

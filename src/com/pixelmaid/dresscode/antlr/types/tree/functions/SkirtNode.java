@@ -18,10 +18,10 @@ public class SkirtNode extends DrawableNode implements DCNode {
     public VarType evaluate() {
         //Skirt takes in no constructors at the moment.
         Skirt e = new Skirt();
-
+        
         try{
-            //TODO evaluate the inputs of Skirt to adjust size of board. 
             /*
+            //TODO evaluate the inputs of Skirt to adjust size of board. 
             if(params.get(0).evaluate().isString()){
                 String path = params.get(0).evaluate().asString();
                 //e.setPath(path);

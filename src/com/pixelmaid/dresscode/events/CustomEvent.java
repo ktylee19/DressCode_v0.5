@@ -19,7 +19,6 @@ public class CustomEvent extends EventObject {
     public static final int RESIZE_BOARD = 12;
 	public CustomEvent(Object source) {
 		super(source);
-		// TODO Auto-generated constructor stub
 	}
 
 }

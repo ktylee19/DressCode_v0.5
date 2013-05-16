@@ -67,6 +67,10 @@ public class DrawableManager extends NodeEvent implements CustomEventListener {
 		case CustomEvent.SHAPE_LOAD_REQUESTED:
 			this.drawableEvent(CustomEvent.SHAPE_LOAD_REQUESTED, d);
 			break;
+		
+		case CustomEvent.RESIZE_BOARD:
+		    this.drawableEvent(CustomEvent.RESIZE_BOARD, d);
+		    break;
 		}
 		
 	}
@@ -83,9 +87,6 @@ public class DrawableManager extends NodeEvent implements CustomEventListener {
 			
 			break;
 		}
-			
-		
-		
 	}
 
 	@Override
@@ -121,7 +122,5 @@ public class DrawableManager extends NodeEvent implements CustomEventListener {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	
 	
 }
