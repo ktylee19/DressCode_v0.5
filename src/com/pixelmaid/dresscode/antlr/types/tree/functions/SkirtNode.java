@@ -45,6 +45,7 @@ public class SkirtNode extends DrawableNode implements DCNode {
 
             this.drawableEvent(CustomEvent.DRAWABLE_CREATED, e);
             this.drawableEvent(CustomEvent.SHAPE_LOAD_REQUESTED, e);
+            this.drawableEvent(CustomEvent.RESIZE_BOARD, e);
         }
         catch (ClassCastException err){
             //Window.output.setText("incorrect parameters for Skirt call at line:"+line);

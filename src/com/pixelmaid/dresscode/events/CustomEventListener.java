@@ -24,5 +24,6 @@ public interface CustomEventListener {
 
 	public void handleCustomMoveEvent(Object source, int event, Drawable selectedObject);
 
-	
+	//public void handleCustomMoveEvent(Object source, int event, Drawable selectedObject);
+
 }

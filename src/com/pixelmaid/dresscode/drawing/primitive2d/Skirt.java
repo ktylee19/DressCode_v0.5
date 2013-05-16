@@ -9,7 +9,8 @@ import com.pixelmaid.dresscode.drawing.datatype.Point;
 
 public class Skirt extends LShape {
     //29_front and 32_back
-    private String shapePath = "/Users/Katie/Desktop/skirt_template/data/29_front.svg"; //
+    private String shapePath = ClassLoader.getSystemResource("com/pixelmaid/dresscode/resources/29_front.svg").toString(); //
+    
     private PShape shape; //processing PShape
     private Embedded canvas; //
     private double x=0; //x coordinate of shape
